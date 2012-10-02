@@ -84,8 +84,8 @@ static NSPredicate* webViewUserAgentTest;
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType cachingAllowed:(BOOL)cachingAllowed statusCode:(NSInteger)statusCode {
     NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
     [_headers setValue:mimeType forKey:@"Content-Type"];
-    [_headers setValue:[NSNumber numberWithInt:data.length] forKey:@"Content-Length"];
-    NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_request.URL statusCode:200 HTTPVersion:@"HTTP/1.1" headerFields:_headers];
+//    [_headers setValue:[NSNumber numberWithInt:data.length] forKey:@"Content-Length"]; Why does this make throw the NSHTTPURLResponse initiator throw???
+    NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
     [_client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
     [_client URLProtocol:_protocol didLoadData:data];
     [_client URLProtocolDidFinishLoading:_protocol];
