@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @interface WebViewProxyResponse : NSObject
+@property (strong,nonatomic) NSMutableURLRequest* request;
 @property (strong,nonatomic) NSURLResponse* response;
 // Convenience API
 - (void) respondWithData:(NSData*)data encoding:(NSStringEncoding)encoding;

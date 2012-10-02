@@ -42,6 +42,7 @@ static NSMutableArray* requestMatchers;
 
 /* This is the proxy response object, through which we send responses */
 @implementation WebViewProxyResponse
+@synthesize request=_request;
 // Convenience API
 - (void)respondWithData:(NSData *)data encoding:(NSStringEncoding)encoding {
 
@@ -57,7 +58,7 @@ static NSMutableArray* requestMatchers;
 }
 // Core API
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
-    
+    [self.request setValue:headerValue forHTTPHeaderField:headerName];
 }
 - (void)sendData:(NSData *)data {
     
