@@ -1,6 +1,7 @@
 #include "WebViewProxy.h"
 
 static NSMutableArray* requestMatchers;
+static NSPredicate* webViewUserAgentTest;
 
 /* A single path matcher */
 @interface WebViewProxyRequestMatcher : NSObject
@@ -117,6 +118,8 @@ static NSMutableArray* requestMatchers;
 }
 
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
+    NSString* userAgent = [request.allHTTPHeaderFields valueForKey:@"User-Agent"];
+    if (userAgent && ![webViewUserAgentTest evaluateWithObject:userAgent]) { return NO; }
     return ([self findRequestMatcher:request.URL] != nil);
 }
 
@@ -159,6 +162,8 @@ static NSMutableArray* requestMatchers;
 + (void)handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler {
     if (!requestMatchers) {
         requestMatchers = [NSMutableArray array];
+        webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
+        // e.g. "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Mobile/10A403"
         [NSURLProtocol registerClass:[WebViewProxyURLProtocol class]];
     }
     // Match on any property of NSURL, e.g. "scheme MATCHES 'http' AND host MATCHES 'www.google.com'"
