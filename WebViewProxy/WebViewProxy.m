@@ -22,7 +22,7 @@ static NSPredicate* webViewUserAgentTest;
 /* This is the proxy response object, through which we send responses */
 @implementation WebViewProxyResponse
 @synthesize request=_request;
-- (id)initWithProtocol:(NSURLProtocol *)protocol request:(NSURLRequest *)request client:(id<NSURLProtocolClient>)client {
+- (id)_initWithProtocol:(NSURLProtocol *)protocol request:(NSURLRequest *)request client:(id<NSURLProtocolClient>)client {
     if (self = [super init]) {
         _protocol = protocol;
         _request = request;
@@ -75,6 +75,13 @@ static NSPredicate* webViewUserAgentTest;
     [self respondWithData:data mimeType:mimeType cachingAllowed:NO];
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType cachingAllowed:(BOOL)cachingAllowed {
+    [self respondWithData:data mimeType:mimeType cachingAllowed:cachingAllowed statusCode:200];
+}
+- (void)respondWithError:(NSInteger)statusCode text:(NSString *)text {
+    NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
+    [self respondWithData:data mimeType:@"text/plain" cachingAllowed:NO statusCode:statusCode];
+}
+- (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType cachingAllowed:(BOOL)cachingAllowed statusCode:(NSInteger)statusCode {
     NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
     [_headers setValue:mimeType forKey:@"Content-Type"];
     [_headers setValue:[NSNumber numberWithInt:data.length] forKey:@"Content-Length"];
@@ -84,6 +91,9 @@ static NSPredicate* webViewUserAgentTest;
     [_client URLProtocolDidFinishLoading:_protocol];
 }
 // Pipe API
+- (void)pipeResponse:(NSURLResponse *)response {
+    [self pipeResponse:response cachingAllowed:NO];
+}
 - (void)pipeResponse:(NSURLResponse *)response cachingAllowed:(BOOL)cachingAllowed {
     NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
     [_client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
@@ -130,7 +140,7 @@ static NSPredicate* webViewUserAgentTest;
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
     // TODO How to handle cachedResponse?
     self.requestMatcher = [self.class findRequestMatcher:request.URL];
-    self.proxyResponse = [[WebViewProxyResponse alloc] initWithProtocol:self request:request client:client];
+    self.proxyResponse = [[WebViewProxyResponse alloc] _initWithProtocol:self request:request client:client];
     return self;
 }
 
