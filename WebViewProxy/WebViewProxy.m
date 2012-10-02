@@ -2,41 +2,41 @@
 
 /* A single path matcher */
 @interface WebViewProxyRequestMatcher : NSObject
-@property (strong,nonatomic) NSPredicate* schemePredicate;
-@property (strong,nonatomic) NSPredicate* hostPredicate;
-@property (strong,nonatomic) NSPredicate* pathPredicate;
-@property (strong,nonatomic) NSPredicate* fullPredicate;
+@property (strong,nonatomic) NSPredicate* predicate;
 @property (copy) WebViewProxyHandler handler;
-- (WebViewProxyRequestMatcher*)init:(WebViewProxyHandler)handler scheme:(NSString*)scheme host:(NSString*)host paths:(NSString*)paths;
++ (WebViewProxyRequestMatcher*)matchWithPredicate:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler;
 @end
 @implementation WebViewProxyRequestMatcher
-@synthesize schemePredicate, hostPredicate, pathPredicate, handler=_handler;
-- (WebViewProxyRequestMatcher*)init:(WebViewProxyHandler)handler scheme:(NSString *)scheme host:(NSString *)host paths:(NSString *)paths {
-    if (self = [super init]) {
-        self.handler = handler;
-        self.schemePredicate = [NSPredicate predicateWithFormat:@""];
-    }
-    return self;
+@synthesize predicate=_predicate, handler=_handler;
++ (WebViewProxyRequestMatcher*)matchWithPredicate:(NSPredicate *)predicate handler:(WebViewProxyHandler)handler {
+    WebViewProxyRequestMatcher* matcher = [[WebViewProxyRequestMatcher alloc] init];
+    matcher.handler = handler;
+    matcher.predicate = predicate;
+    return matcher;
 }
 @end
 
 /* This is the actual WebViewProxy API */
-static NSMutableArray* handlers;
+static NSMutableArray* requestMatchers;
 @implementation WebViewProxy
 + (void)setup {
-    handlers = [NSMutableArray array];
+    requestMatchers = [NSMutableArray array];
 }
-+ (void)handleScheme:(NSString *)scheme handler:(WebViewProxyHandler)handler {
-    
++ (void)handleRequestsWithScheme:(NSString *)scheme handler:(WebViewProxyHandler)handler {
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"scheme MATCHES '%@'", scheme];
+    [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handleHost:(NSString *)host handler:(WebViewProxyHandler)handler {
-    
++ (void)handleRequestsWithHost:(NSString *)host handler:(WebViewProxyHandler)handler {
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES '%@'", host];
+    [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handlePaths:(NSString *)pathPrefix handler:(WebViewProxyHandler)handler {
-    
++ (void)handleRequestsWithPathPrefix:(NSString *)pathPrefix handler:(WebViewProxyHandler)handler {
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"path MATCHES '^%@.*'", pathPrefix];
+    [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handleRegex:(NSString*)regex handler:(WebViewProxyHandler)handler {
-    
++ (void)handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler {
+    // Match on any property of NSURL, e.g. "scheme MATCHES 'http' AND host MATCHES 'www.google.com'"
+    [requestMatchers addObject:[WebViewProxyRequestMatcher matchWithPredicate:predicate handler:handler]];
 }
 @end
 
