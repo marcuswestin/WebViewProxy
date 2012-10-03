@@ -3,6 +3,7 @@
 static NSMutableArray* requestMatchers;
 static NSPredicate* webViewUserAgentTest;
 
+
 // A single path matcher
 @interface WebViewProxyRequestMatcher : NSObject
 @property (strong,nonatomic) NSPredicate* predicate;
@@ -18,6 +19,7 @@ static NSPredicate* webViewUserAgentTest;
     return matcher;
 }
 @end
+
 
 // This is the proxy response object, through which we send responses
 @implementation WebViewProxyResponse {
@@ -115,11 +117,8 @@ static NSPredicate* webViewUserAgentTest;
 @property (strong,nonatomic) WebViewProxyRequestMatcher* requestMatcher;
 + (WebViewProxyRequestMatcher*)findRequestMatcher:(NSURL*)url;
 @end
-
-// The actual implementation of our NSURLProtocol subclass
 @implementation WebViewProxyURLProtocol
 @synthesize proxyResponse=_proxyResponse, requestMatcher=_requestMatcher;
-
 + (WebViewProxyRequestMatcher *)findRequestMatcher:(NSURL *)url {
     for (WebViewProxyRequestMatcher* requestMatcher in requestMatchers) {
         if ([requestMatcher.predicate evaluateWithObject:url]) {
@@ -128,33 +127,27 @@ static NSPredicate* webViewUserAgentTest;
     }
     return nil;
 }
-
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     NSString* userAgent = [request.allHTTPHeaderFields valueForKey:@"User-Agent"];
     if (userAgent && ![webViewUserAgentTest evaluateWithObject:userAgent]) { return NO; }
     return ([self findRequestMatcher:request.URL] != nil);
 }
-
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
     return request;
 }
-
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
     // TODO How to handle cachedResponse?
     self.requestMatcher = [self.class findRequestMatcher:request.URL];
     self.proxyResponse = [[WebViewProxyResponse alloc] _initWithProtocol:self request:request client:client];
     return self;
 }
-
 - (void)startLoading {
     self.requestMatcher.handler(self.proxyResponse);
 }
-
 - (void)stopLoading {
 }
-
-
 @end
+
 
 // This is the actual WebViewProxy API
 @implementation WebViewProxy
@@ -182,3 +175,4 @@ static NSPredicate* webViewUserAgentTest;
     [requestMatchers addObject:[WebViewProxyRequestMatcher matchWithPredicate:predicate handler:handler]];
 }
 @end
+
