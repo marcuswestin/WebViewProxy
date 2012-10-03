@@ -3,7 +3,7 @@
 static NSMutableArray* requestMatchers;
 static NSPredicate* webViewUserAgentTest;
 
-/* A single path matcher */
+// A single path matcher
 @interface WebViewProxyRequestMatcher : NSObject
 @property (strong,nonatomic) NSPredicate* predicate;
 @property (copy) WebViewProxyHandler handler;
@@ -19,7 +19,7 @@ static NSPredicate* webViewUserAgentTest;
 }
 @end
 
-/* This is the proxy response object, through which we send responses */
+// This is the proxy response object, through which we send responses
 @implementation WebViewProxyResponse
 @synthesize request=_request;
 - (id)_initWithProtocol:(NSURLProtocol *)protocol request:(NSURLRequest *)request client:(id<NSURLProtocolClient>)client {
@@ -107,14 +107,14 @@ static NSPredicate* webViewUserAgentTest;
 @end
 
 
-/* The NSURLProtocol implementation that allows us to intercept requests. */
+// The NSURLProtocol implementation that allows us to intercept requests.
 @interface WebViewProxyURLProtocol : NSURLProtocol
 @property (strong,nonatomic) WebViewProxyResponse* proxyResponse;
 @property (strong,nonatomic) WebViewProxyRequestMatcher* requestMatcher;
 + (WebViewProxyRequestMatcher*)findRequestMatcher:(NSURL*)url;
 @end
 
-/* The actual implementation of our NSURLProtocol subclass */
+// The actual implementation of our NSURLProtocol subclass
 @implementation WebViewProxyURLProtocol
 @synthesize proxyResponse=_proxyResponse, requestMatcher=_requestMatcher;
 
@@ -154,7 +154,7 @@ static NSPredicate* webViewUserAgentTest;
 
 @end
 
-/* This is the actual WebViewProxy API */
+// This is the actual WebViewProxy API
 @implementation WebViewProxy
 + (void)handleRequestsWithScheme:(NSString *)scheme handler:(WebViewProxyHandler)handler {
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"scheme MATCHES[cd] %@", scheme];

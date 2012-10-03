@@ -28,10 +28,10 @@
 - (id) _initWithProtocol:(NSURLProtocol*)protocol request:(NSURLRequest*)request client:(id<NSURLProtocolClient>)client;
 @end
 
-/* Our block definitions */
+// Our block definitions
 typedef void (^WebViewProxyHandler)(WebViewProxyResponse* response);
 
-/* The actual WebViewProxy API itself */
+// The actual WebViewProxy API itself
 @interface WebViewProxy : NSObject
 + (void) handleRequestsWithScheme:(NSString*)scheme handler:(WebViewProxyHandler)handler;
 + (void) handleRequestsWithHost:(NSString*)host handler:(WebViewProxyHandler)handler;
