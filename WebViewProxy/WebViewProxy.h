@@ -1,11 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface WebViewProxyResponse : NSObject {
-    @private NSURLProtocol* _protocol;
-    @private id<NSURLProtocolClient> _client;
-    @private NSURLResponse* _response;
-    @private NSMutableDictionary* _headers;
-}
+@interface WebViewProxyResponse : NSObject
 @property (strong,nonatomic,readonly) NSURLRequest* request;
 // Convenience API
 - (void) respondWithImage:(UIImage*)image;

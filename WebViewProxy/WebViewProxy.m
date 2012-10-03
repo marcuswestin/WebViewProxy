@@ -20,7 +20,12 @@ static NSPredicate* webViewUserAgentTest;
 @end
 
 // This is the proxy response object, through which we send responses
-@implementation WebViewProxyResponse
+@implementation WebViewProxyResponse {
+    @private NSURLProtocol* _protocol;
+    @private id<NSURLProtocolClient> _client;
+    @private NSURLResponse* _response;
+    @private NSMutableDictionary* _headers;
+}
 @synthesize request=_request;
 - (id)_initWithProtocol:(NSURLProtocol *)protocol request:(NSURLRequest *)request client:(id<NSURLProtocolClient>)client {
     if (self = [super init]) {
