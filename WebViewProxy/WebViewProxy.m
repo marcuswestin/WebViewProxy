@@ -32,9 +32,6 @@ static NSPredicate* webViewUserAgentTest;
     return self;
 }
 // Convenience API
-- (void)respondWithData:(NSData *)data encoding:(NSStringEncoding)encoding {
-
-}
 - (void)respondWithImage:(UIImage *)image {
     [self respondWithImage:image cachingAllowed:YES];
 }
