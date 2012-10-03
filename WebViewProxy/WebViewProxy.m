@@ -90,7 +90,7 @@ static NSPredicate* webViewUserAgentTest;
     NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
     [_client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
     [_client URLProtocol:_protocol didLoadData:data];
-    [_client URLProtocolDidFinishLoading:_protocol];
+//    [_client URLProtocolDidFinishLoading:_protocol]; Why does this cause a memory exception?
 }
 // Pipe API
 - (void)pipeResponse:(NSURLResponse *)response {
