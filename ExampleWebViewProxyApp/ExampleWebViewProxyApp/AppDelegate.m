@@ -11,6 +11,29 @@
         [response respondWithImage:image];
     }];
 
+    [WebViewProxy handleRequestsWithHost:@"google_logo" handler:^(WebViewProxyResponse *response) {
+        UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
+        [response respondWithImage:image];
+    }];
+
+    [WebViewProxy handleRequestsWithHost:@"google_logo_bw" handler:^(WebViewProxyResponse *response) {
+        UIImage* originalImage = [UIImage imageNamed:@"GoogleLogo.png"];
+        CGColorSpaceRef colorSapce = CGColorSpaceCreateDeviceGray();
+        CGContextRef context = CGBitmapContextCreate(nil, originalImage.size.width, originalImage.size.height, 8, originalImage.size.width, colorSapce, kCGImageAlphaNone);
+        CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
+        CGContextSetShouldAntialias(context, NO);
+        CGContextDrawImage(context, CGRectMake(0, 0, originalImage.size.width, originalImage.size.height), [originalImage CGImage]);
+        
+        CGImageRef bwImage = CGBitmapContextCreateImage(context);
+        CGContextRelease(context);
+        CGColorSpaceRelease(colorSapce);
+        
+        UIImage *resultImage = [UIImage imageWithCGImage:bwImage]; // This is result B/W image.
+        CGImageRelease(bwImage);
+        
+        [response respondWithImage:resultImage];
+    }];
+
     UIWebView* webView = [[UIWebView alloc] initWithFrame:[[UIScreen mainScreen] applicationFrame]];
     NSString* webViewContentPath = [[NSBundle mainBundle] pathForResource:@"WebViewContent" ofType:@"html"];
     NSString* htmlContent = [NSString stringWithContentsOfFile:webViewContentPath encoding:NSUTF8StringEncoding error:nil];

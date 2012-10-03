@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2C1DC533161ABB4100A8182A /* ExampleImage.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1DC532161ABB4100A8182A /* ExampleImage.png */; };
+		2C1DC536161C0EEB00A8182A /* GoogleLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C1DC535161C0EEB00A8182A /* GoogleLogo.png */; };
 		2CA5EF37161962850019B20B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5EF36161962850019B20B /* UIKit.framework */; };
 		2CA5EF39161962850019B20B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5EF38161962850019B20B /* Foundation.framework */; };
 		2CA5EF3B161962850019B20B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2CA5EF3A161962850019B20B /* CoreGraphics.framework */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		2C1DC532161ABB4100A8182A /* ExampleImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ExampleImage.png; sourceTree = "<group>"; };
+		2C1DC535161C0EEB00A8182A /* GoogleLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = GoogleLogo.png; sourceTree = "<group>"; };
 		2CA5EF32161962850019B20B /* ExampleWebViewProxyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExampleWebViewProxyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CA5EF36161962850019B20B /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2CA5EF38161962850019B20B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -89,6 +91,7 @@
 				2CA5EF46161962850019B20B /* AppDelegate.m */,
 				2CA5EF57161962F20019B20B /* WebViewContent.html */,
 				2C1DC532161ABB4100A8182A /* ExampleImage.png */,
+				2C1DC535161C0EEB00A8182A /* GoogleLogo.png */,
 				2CA5EF53161962950019B20B /* WebViewProxy */,
 				2CA5EF3D161962850019B20B /* Supporting Files */,
 			);
@@ -176,6 +179,7 @@
 				2CA5EF4D161962850019B20B /* Default-568h@2x.png in Resources */,
 				2CA5EF58161962F20019B20B /* WebViewContent.html in Resources */,
 				2C1DC533161ABB4100A8182A /* ExampleImage.png in Resources */,
+				2C1DC536161C0EEB00A8182A /* GoogleLogo.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
