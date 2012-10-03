@@ -43,10 +43,10 @@ static NSPredicate* webViewUserAgentTest;
         mimeType = @"image/jpg";
         data = UIImageJPEGRepresentation(image, 1.0);
     } else {
-        // Default to PNG
         if (![url.pathExtension isEqualToString:@"png"]) {
-            NSLog(@"WARNING WebViewProxy respondWithImage called for request with unknown file type \".%@\". Defaulting to image/png", url.absoluteString);
+            NSLog(@"WARNING WebViewProxy respondWithImage called for unknown type \"%@\". Defaulting to image/png", url.absoluteString);
         }
+        // Default to PNG
         mimeType = @"image/png";
         data = UIImagePNGRepresentation(image);
     }
