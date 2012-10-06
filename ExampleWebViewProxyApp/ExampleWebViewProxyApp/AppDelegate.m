@@ -6,11 +6,28 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [WebViewProxy handleRequestsWithHost:@"foo" handler:^(WebViewProxyResponse *response) {
-        UIImage* image = [UIImage imageNamed:@"ExampleImage.png"];
-        [response respondWithImage:image];
+    [WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(WebViewProxyResponse *response) {
+        [response respondWithText:@"Hi!"];
+    }];
+    
+    [WebViewProxy handleRequestsWithHost:@"foo.com" handler:^(WebViewProxyResponse *response) {
+        [response respondWithText:@"Hi!"];
+    }];
+    
+    [WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WebViewProxyResponse *response) {
+        [response respondWithText:@"Hi!"];
+    }];
+    
+    [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(WebViewProxyResponse *response) {
+        [response respondWithText:@"Hi!"];
     }];
 
+    [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(WebViewProxyResponse *response) {
+        [response respondWithText:@"Hi!"];
+    }];
+    
+    
+    
     [WebViewProxy handleRequestsWithHost:@"google_logo" handler:^(WebViewProxyResponse *response) {
         UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
         [response respondWithImage:image];
