@@ -20,7 +20,7 @@
 - (void) pipeData:(NSData*)data;
 - (void) pipeEnd;
 // Private methods
-- (id) _initWithProtocol:(NSURLProtocol*)protocol request:(NSURLRequest*)request client:(id<NSURLProtocolClient>)client;
+- (id) _initWithProtocol:(NSURLProtocol*)protocol;
 @end
 
 // Our block definitions

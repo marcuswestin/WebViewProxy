@@ -23,27 +23,25 @@ static NSPredicate* webViewUserAgentTest;
 
 // This is the proxy response object, through which we send responses
 @implementation WebViewProxyResponse {
-    @private NSURLProtocol* _protocol;
-    @private id<NSURLProtocolClient> _client;
-    @private NSURLResponse* _response;
-    @private NSMutableDictionary* _headers;
+    NSURLProtocol* _protocol;
+    NSMutableDictionary* _headers;
 }
-@synthesize request=_request;
-- (id)_initWithProtocol:(NSURLProtocol *)protocol request:(NSURLRequest *)request client:(id<NSURLProtocolClient>)client {
+- (id)_initWithProtocol:(NSURLProtocol*)protocol {
     if (self = [super init]) {
         _protocol = protocol;
-        _request = request;
-        _client = client;
         _headers = [NSMutableDictionary dictionary];
     }
     return self;
+}
+- (NSURLRequest *)request {
+    return _protocol.request;
 }
 // Convenience API
 - (void)respondWithImage:(UIImage *)image {
     [self respondWithImage:image cachingAllowed:YES];
 }
 - (void)respondWithImage:(UIImage *)image cachingAllowed:(BOOL)cachingAllowed {
-    NSURL* url = _request.URL;
+    NSURL* url = _protocol.request.URL;
     NSString* mimeType = nil;
     NSData* data = nil;
     if ([url.pathExtension isEqualToString:@"jpg"] || [url.pathExtension isEqualToString:@"jpeg"]) {
@@ -89,10 +87,10 @@ static NSPredicate* webViewUserAgentTest;
     NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
     [_headers setValue:mimeType forKey:@"Content-Type"];
 //    [_headers setValue:[NSNumber numberWithInt:data.length] forKey:@"Content-Length"]; Why does this make throw the NSHTTPURLResponse initiator throw???
-    NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
-    [_client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
-    [_client URLProtocol:_protocol didLoadData:data];
-//    [_client URLProtocolDidFinishLoading:_protocol]; Why does this cause a memory exception?
+    NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_protocol.request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
+    [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
+    [_protocol.client URLProtocol:_protocol didLoadData:data];
+    [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
 // Pipe API
 - (void)pipeResponse:(NSURLResponse *)response {
@@ -100,13 +98,13 @@ static NSPredicate* webViewUserAgentTest;
 }
 - (void)pipeResponse:(NSURLResponse *)response cachingAllowed:(BOOL)cachingAllowed {
     NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
-    [_client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
+    [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
 }
 - (void)pipeData:(NSData *)data {
-    [_client URLProtocol:_protocol didLoadData:data];
+    [_protocol.client URLProtocol:_protocol didLoadData:data];
 }
 - (void)pipeEnd {
-    [_client URLProtocolDidFinishLoading:_protocol];
+    [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
 @end
 
@@ -136,9 +134,11 @@ static NSPredicate* webViewUserAgentTest;
     return request;
 }
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
-    // TODO How to handle cachedResponse?
-    self.requestMatcher = [self.class findRequestMatcher:request.URL];
-    self.proxyResponse = [[WebViewProxyResponse alloc] _initWithProtocol:self request:request client:client];
+    if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
+        // TODO How to handle cachedResponse?
+        self.requestMatcher = [self.class findRequestMatcher:request.URL];
+        self.proxyResponse = [[WebViewProxyResponse alloc] _initWithProtocol:self];
+    }
     return self;
 }
 - (void)startLoading {
