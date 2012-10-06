@@ -163,9 +163,13 @@ static NSPredicate* webViewUserAgentTest;
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@", host];
     [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handleRequestsWithPathPrefix:(NSString *)pathPrefix handler:(WebViewProxyHandler)handler {
++ (void)handleRequestsWithHost:(NSString *)host pathPrefix:(NSString *)pathPrefix handler:(WebViewProxyHandler)handler {
+    if (![pathPrefix hasPrefix:@"/"]) {
+        // Paths always being with "/", so help out people who forget it
+        pathPrefix = [@"/" stringByAppendingString:pathPrefix];
+    }
     NSString* pathPrefixRegex = [NSString stringWithFormat:@"^%@.*", pathPrefix];
-    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"path MATCHES[cd] %@", pathPrefixRegex];
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@ AND path MATCHES[cd] %@", host, pathPrefixRegex];
     [self handleRequestsMatching:predicate handler:handler];
 }
 + (void)handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler {

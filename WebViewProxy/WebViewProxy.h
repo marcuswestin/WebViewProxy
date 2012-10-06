@@ -30,6 +30,6 @@ typedef void (^WebViewProxyHandler)(WebViewProxyResponse* response);
 @interface WebViewProxy : NSObject
 + (void) handleRequestsWithScheme:(NSString*)scheme handler:(WebViewProxyHandler)handler;
 + (void) handleRequestsWithHost:(NSString*)host handler:(WebViewProxyHandler)handler;
-+ (void) handleRequestsWithPathPrefix:(NSString*)pathPrefix handler:(WebViewProxyHandler)handler;
++ (void) handleRequestsWithHost:(NSString*)host pathPrefix:(NSString*)pathPrefix handler:(WebViewProxyHandler)handler;
 + (void) handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler;
 @end
