@@ -137,6 +137,12 @@ static NSPredicate* webViewUserAgentTest;
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
     return request;
 }
+
++ (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a toRequest:(NSURLRequest *)b {
+    // TODO Implement this here, or expose it through WebViewProxyResponse?
+    return NO;
+}
+
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
     if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
         // TODO How to handle cachedResponse?
