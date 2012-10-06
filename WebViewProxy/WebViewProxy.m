@@ -4,7 +4,7 @@ static NSMutableArray* requestMatchers;
 static NSPredicate* webViewUserAgentTest;
 
 
-// A single path matcher
+// A request matcher, which matches a UIWebView request to a registered WebViewProxyHandler
 @interface WebViewProxyRequestMatcher : NSObject
 @property (strong,nonatomic) NSPredicate* predicate;
 @property (copy) WebViewProxyHandler handler;
@@ -19,6 +19,7 @@ static NSPredicate* webViewUserAgentTest;
     return matcher;
 }
 @end
+
 
 
 // This is the proxy response object, through which we send responses
@@ -36,7 +37,7 @@ static NSPredicate* webViewUserAgentTest;
 - (NSURLRequest *)request {
     return _protocol.request;
 }
-// Convenience API
+// High level API
 - (void)respondWithImage:(UIImage *)image {
     [self respondWithImage:image cachingAllowed:YES];
 }
@@ -69,7 +70,7 @@ static NSPredicate* webViewUserAgentTest;
     NSData* data = [html dataUsingEncoding:NSUTF8StringEncoding];
     [self respondWithData:data mimeType:@"text/html" cachingAllowed:NO];
 }
-// Core API
+// Low level API
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
     [_headers setValue:headerValue forKey:headerName];
 }
@@ -80,6 +81,7 @@ static NSPredicate* webViewUserAgentTest;
     [self respondWithData:data mimeType:mimeType cachingAllowed:cachingAllowed statusCode:200];
 }
 - (void)respondWithError:(NSInteger)statusCode text:(NSString *)text {
+    // TODO We need to add an error responder to signal a network error, as opposed to an HTTP error
     NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
     [self respondWithData:data mimeType:@"text/plain" cachingAllowed:NO statusCode:statusCode];
 }
@@ -111,6 +113,7 @@ static NSPredicate* webViewUserAgentTest;
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
 @end
+
 
 
 // The NSURLProtocol implementation that allows us to intercept requests.
@@ -155,6 +158,8 @@ static NSPredicate* webViewUserAgentTest;
     self.requestMatcher.handler(self.proxyResponse);
 }
 - (void)stopLoading {
+    // TODO Notify self.requestMatcher to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];. Regardless of if an onStopLoading handler is registered, requestMather needs to stop sending signals to _client
+    NSLog(@"STOP LOADING");
 }
 @end
 
@@ -189,4 +194,3 @@ static NSPredicate* webViewUserAgentTest;
     [requestMatchers addObject:[WebViewProxyRequestMatcher matchWithPredicate:predicate handler:handler]];
 }
 @end
-

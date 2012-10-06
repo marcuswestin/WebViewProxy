@@ -2,13 +2,13 @@
 
 @interface WebViewProxyResponse : NSObject
 @property (strong,nonatomic,readonly) NSURLRequest* request;
-// Convenience API
+// High level API
 - (void) respondWithImage:(UIImage*)image;
 - (void) respondWithImage:(UIImage*)image cachingAllowed:(BOOL)cachingAllowed;
 - (void) respondWithText:(NSString*)text;
 - (void) respondWithHTML:(NSString*)html;
 - (void) respondWithJSON:(NSDictionary*)jsonObject;
-// Core API
+// Low level API
 - (void) respondWithError:(NSInteger)statusCode text:(NSString*)text;
 - (void) setHeader:(NSString*)headerName value:(NSString*)headerValue;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType;
