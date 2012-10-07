@@ -42,7 +42,7 @@ Examples
 		[response respondWithText:@"Hi!"];
 	}];
 
-##### + (void) handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler;
+##### + (void) handleRequestsMatching:(NSPredicate\*)predicate handler:(WebViewProxyHandler)handler;
 
 Intercept all UIWebView requests where the `NSURL` matches the given `NSPredicate`.
 
@@ -71,7 +71,7 @@ There are 3 type of APIs for responding to a request
 
 Descriptions and examples will be fleshed out.
 
-##### - (void) respondWithImage:(UIImage*)image;
+##### - (void) respondWithImage:(UIImage\*)image;
 Respond with an image (sent with Content-Type "image/png" by default, or "image/jpg" for requests that end in `.jpg` or `.jpeg`):
 
 Examples
