@@ -73,30 +73,94 @@ Descriptions and examples will be fleshed out.
 
 ##### - (void) respondWithImage:(UIImage*)image;
 Respond with an image (sent with Content-Type "image/png" by default, or "image/jpg" for requests that end in `.jpg` or `.jpeg`):
-##### - (void) respondWithImage:(UIImage*)image cachingAllowed:(BOOL)cachingAllowed;
-##### - (void) respondWithText:(NSString*)text;
+
+Examples
+
+	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(WebViewProxyResponse *response) {
+		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
+		[response respondWithImage:image];
+	}];
+
+##### - (void) respondWithText:(NSString\*)text;
 Respond with a text response (sent with Content-Type "text/plain"):
-##### - (void) respondWithHTML:(NSString*)html;
+
+	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WebViewProxyResponse *response) {
+		[response respondWithText:@"Hi!"];
+	}];
+
+##### - (void) respondWithHTML:(NSString\*)html;
 Respond with HTML (sent with Content-Type "text/html"):
-##### - (void) respondWithJSON:(NSDictionary*)jsonObject;
+
+	[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(WebViewProxyResponse *response) {
+		[response respondWithText:@"<div class='notification'>Hi!</div>"];
+	}];
+
+##### - (void) respondWithJSON:(NSDictionary\*)jsonObject;
 Respond with JSON (sent with Content-Type "application/json"):
+
+	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WebViewProxyResponse *response) {
+		NSDictionary* jsonObject = [NSDictionary dictionaryWithObject:@"foo" forKey:@"bar"];
+		[response respondWithJSON:jsonObject]; // sends '{ "bar":"foo" }'
+	}];
+
 
 #### Low level response API
 
 Descriptions and examples will be fleshed out.
 
-##### - (void) respondWithError:(NSInteger)statusCode text:(NSString*)text;
-##### - (void) setHeader:(NSString*)headerName value:(NSString*)headerValue;
-Set response headers before responding:
-##### - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType;
-##### - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType cachingAllowed:(BOOL)cachingAllowed;
-##### - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType cachingAllowed:(BOOL)cachingAllowed statusCode:(NSInteger)statusCode;
+##### - (void) respondWithError:(NSInteger)statusCode text:(NSString\*)text;
+Respond with the given HTTP status error code and text.
+
+Examples
+
+	[response respondWithError:400 text:@"Bad request"];
+	[response respondWithError:404 text:@"Not found"];
+
+##### - (void) setHeader:(NSString\*)headerName value:(NSString\*)headerValue;
+Set response headers before responding.
+
+Examples
+
+	[response setHeader:@"Content-Type" value:@"image/gif"];
+	[response setHeader:@"Content-Type" value:@"audio/wav"];
+	[response setHeader:@"Host" value:@"WebViewProxy"];
+
+##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType;
+
+Respond with the given data and mime type (the mime type gets sent as the HTTP header `Content-Type`).
+
+Examples
+
+	NSString* greeting = @"Hi!";
+	NSData* data = [greeting dataUsingEncoding:NSUTF8StringEncoding];
+	[response respondWithData:data mimeType:@"text/plain"];
+
+##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType statusCode:(NSInteger)statusCode;
+
+Respond with the given data, mime type and HTTP status code (the mime type gets sent as the HTTP header `Content-Type`).
+
+Examples
+
+	NSData* data = [@"<div>Item has been created</div>" dataUsingEncoding:NSUTF8StringEncoding];
+	[response respondWithData:data mimeType:@"text/html" statusCode:201];
+	[response respondWithData:nil mimeType:nil statusCode:304]; // HTTP status code 304 "Not modified"
+	[response respondWithData:nil mimeType:nil statusCode:204]; // HTTP status code 204 "No Content"
+
 
 #### Piping response API
 
-Descriptions and examples will be fleshed out.
+Pipe an NSURLResponse and its data into the WebViewProxyResponse. This makes it simple to e.g. proxy a request and its response through an NSURLConnection.
 
-##### - (void) pipeResponse:(NSURLResponse*)response cachingAllowed:(BOOL)cachingAllowed;
-##### - (void) pipeResponse:(NSURLResponse*)response;
-##### - (void) pipeData:(NSData*)data;
+Examples to be written.
+
+##### - (void) pipeResponse:(NSURLResponse\*)response;
+
+Pipe an NSURLResponse into the response.
+
+##### - (void) pipeData:(NSData\*)data;
+
+Pipe data into the response.
+
 ##### - (void) pipeEnd;
+
+Finish a piped response.
