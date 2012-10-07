@@ -2,9 +2,9 @@
 
 @interface WebViewProxyResponse : NSObject
 @property (strong,nonatomic,readonly) NSURLRequest* request;
+@property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 // High level API
 - (void) respondWithImage:(UIImage*)image;
-- (void) respondWithImage:(UIImage*)image cachingAllowed:(BOOL)cachingAllowed;
 - (void) respondWithText:(NSString*)text;
 - (void) respondWithHTML:(NSString*)html;
 - (void) respondWithJSON:(NSDictionary*)jsonObject;
@@ -12,10 +12,8 @@
 - (void) respondWithError:(NSInteger)statusCode text:(NSString*)text;
 - (void) setHeader:(NSString*)headerName value:(NSString*)headerValue;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType;
-- (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType cachingAllowed:(BOOL)cachingAllowed;
-- (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType cachingAllowed:(BOOL)cachingAllowed statusCode:(NSInteger)statusCode;
+- (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType statusCode:(NSInteger)statusCode;
 // Pipe data API
-- (void) pipeResponse:(NSURLResponse*)response cachingAllowed:(BOOL)cachingAllowed;
 - (void) pipeResponse:(NSURLResponse*)response;
 - (void) pipeData:(NSData*)data;
 - (void) pipeEnd;

@@ -146,6 +146,16 @@ Examples
 	[response respondWithData:nil mimeType:nil statusCode:304]; // HTTP status code 304 "Not modified"
 	[response respondWithData:nil mimeType:nil statusCode:204]; // HTTP status code 204 "No Content"
 
+##### NSURLCacheStoragePolicy cachePolicy (property)
+
+The cache policy for the response. Default value is `NSURLCacheStorageNotAllowed`
+
+Examples
+
+	response.cachePolicy = NSURLCacheStorageAllowed;
+	response.cachePolicy = NSURLCacheStorageAllowedInMemoryOnly;
+	response.cachePolicy = NSURLCacheStorageNotAllowed;
+
 
 #### Piping response API
 

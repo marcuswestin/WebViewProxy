@@ -27,10 +27,12 @@ static NSPredicate* webViewUserAgentTest;
     NSURLProtocol* _protocol;
     NSMutableDictionary* _headers;
 }
+@synthesize cachePolicy=_cachePolicy;
 - (id)_initWithProtocol:(NSURLProtocol*)protocol {
     if (self = [super init]) {
         _protocol = protocol;
         _headers = [NSMutableDictionary dictionary];
+        _cachePolicy = NSURLCacheStorageNotAllowed;
     }
     return self;
 }
@@ -39,9 +41,6 @@ static NSPredicate* webViewUserAgentTest;
 }
 // High level API
 - (void)respondWithImage:(UIImage *)image {
-    [self respondWithImage:image cachingAllowed:YES];
-}
-- (void)respondWithImage:(UIImage *)image cachingAllowed:(BOOL)cachingAllowed {
     NSURL* url = _protocol.request.URL;
     NSString* mimeType = nil;
     NSData* data = nil;
@@ -56,37 +55,33 @@ static NSPredicate* webViewUserAgentTest;
         mimeType = @"image/png";
         data = UIImagePNGRepresentation(image);
     }
-    [self respondWithData:data mimeType:mimeType cachingAllowed:cachingAllowed];
+    [self respondWithData:data mimeType:mimeType];
 }
 - (void)respondWithJSON:(NSDictionary *)jsonObject {
     NSData* data = [NSJSONSerialization dataWithJSONObject:jsonObject options:0 error:nil];
-    [self respondWithData:data mimeType:@"application/json" cachingAllowed:NO];
+    [self respondWithData:data mimeType:@"application/json"];
 }
 - (void)respondWithText:(NSString *)text {
     NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
-    [self respondWithData:data mimeType:@"text/plain" cachingAllowed:NO];
+    [self respondWithData:data mimeType:@"text/plain"];
 }
 - (void)respondWithHTML:(NSString *)html {
     NSData* data = [html dataUsingEncoding:NSUTF8StringEncoding];
-    [self respondWithData:data mimeType:@"text/html" cachingAllowed:NO];
+    [self respondWithData:data mimeType:@"text/html"];
 }
 // Low level API
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
     [_headers setValue:headerValue forKey:headerName];
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
-    [self respondWithData:data mimeType:mimeType cachingAllowed:NO];
-}
-- (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType cachingAllowed:(BOOL)cachingAllowed {
-    [self respondWithData:data mimeType:mimeType cachingAllowed:cachingAllowed statusCode:200];
+    [self respondWithData:data mimeType:mimeType statusCode:200];
 }
 - (void)respondWithError:(NSInteger)statusCode text:(NSString *)text {
     // TODO We need to add an error responder to signal a network error, as opposed to an HTTP error
     NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
-    [self respondWithData:data mimeType:@"text/plain" cachingAllowed:NO statusCode:statusCode];
+    [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
-- (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType cachingAllowed:(BOOL)cachingAllowed statusCode:(NSInteger)statusCode {
-    NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
+- (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType statusCode:(NSInteger)statusCode {
     if (![_headers objectForKey:@"Content-Type"]) {
         [_headers setValue:mimeType forKey:@"Content-Type"];
     }
@@ -94,7 +89,7 @@ static NSPredicate* webViewUserAgentTest;
         [_headers setValue:[NSString stringWithFormat:@"%d", data.length] forKey:@"Content-Length"];
     }
     NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_protocol.request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
-    [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
+    [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:_cachePolicy];
     [_protocol.client URLProtocol:_protocol didLoadData:data];
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
