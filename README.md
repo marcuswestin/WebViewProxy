@@ -1,12 +1,14 @@
 WebViewProxy
 ============
 
-Easily proxy requests for a UIWebView (without mucking around with NSURLProtocol).
+Proxy requests for a UIWebView, easily and without mucking around with NSURLProtocol.
+
+Responses to intercepted requests may be served either synchronously or asynchronously - this stands in contrast to the `UIWebViewDelegate` method `-(NSCachedURLResponse *)cachedResponseForRequest:url:host:path:`, which may only intercept requests and serve responses synchronously).
 
 API
 ---
 
-### 1: Register handlers with `WebViewProxy`
+### 1: Register handlers with `WebViewProxy` to intercept requests
 
 ##### + (void) handleRequestsWithScheme:(NSString\*)scheme handler:(WebViewProxyHandler)handler;
 
