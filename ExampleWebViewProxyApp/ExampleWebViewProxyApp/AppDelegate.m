@@ -58,6 +58,7 @@
     [self.window addSubview:webView];
     
     self.window.backgroundColor = [UIColor whiteColor];
+    self.window.rootViewController = [[UIViewController alloc] init]; // "Application windows are expected to have a root view controller at the end of application launch"... why? So silly.
     [self.window makeKeyAndVisible];
     return YES;
 }
