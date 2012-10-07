@@ -159,7 +159,6 @@ static NSPredicate* webViewUserAgentTest;
 }
 - (void)stopLoading {
     // TODO Notify self.requestMatcher to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];. Regardless of if an onStopLoading handler is registered, requestMather needs to stop sending signals to _client
-    NSLog(@"STOP LOADING");
 }
 @end
 
