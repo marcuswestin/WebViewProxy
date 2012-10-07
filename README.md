@@ -57,7 +57,7 @@ Examples
 	}];
 
 
-### 2: Respond with the `WebViewProxyResponse`
+### 2: Respond through the `WebViewProxyResponse`
 
 All registered handlers are given a `WebViewProxyRespone* response`. You respond to the request by calling methods on this object.
 
