@@ -32,7 +32,7 @@
     }];
 
     [WebViewProxy handleRequestsWithHost:@"google_logo_bw" handler:^(WVPResponse *response) {
-        UIImage* originalImage = [UIImage imageNamed:@"GoogleLogo.png"];
+        UIImage* originalImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://www.google.com/logos/2012/bohr11-hp.jpg"]]];
         CGColorSpaceRef colorSapce = CGColorSpaceCreateDeviceGray();
         CGContextRef context = CGBitmapContextCreate(nil, originalImage.size.width, originalImage.size.height, 8, originalImage.size.width, colorSapce, kCGImageAlphaNone);
         CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
