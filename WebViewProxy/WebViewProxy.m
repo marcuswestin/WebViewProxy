@@ -5,15 +5,15 @@ static NSPredicate* webViewUserAgentTest;
 
 
 // A request matcher, which matches a UIWebView request to a registered WebViewProxyHandler
-@interface WebViewProxyRequestMatcher : NSObject
+@interface WVPRequestMatcher : NSObject
 @property (strong,nonatomic) NSPredicate* predicate;
-@property (copy) WebViewProxyHandler handler;
-+ (WebViewProxyRequestMatcher*)matchWithPredicate:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler;
+@property (copy) WVPHandler handler;
++ (WVPRequestMatcher*)matchWithPredicate:(NSPredicate*)predicate handler:(WVPHandler)handler;
 @end
-@implementation WebViewProxyRequestMatcher
+@implementation WVPRequestMatcher
 @synthesize predicate=_predicate, handler=_handler;
-+ (WebViewProxyRequestMatcher*)matchWithPredicate:(NSPredicate *)predicate handler:(WebViewProxyHandler)handler {
-    WebViewProxyRequestMatcher* matcher = [[WebViewProxyRequestMatcher alloc] init];
++ (WVPRequestMatcher*)matchWithPredicate:(NSPredicate *)predicate handler:(WVPHandler)handler {
+    WVPRequestMatcher* matcher = [[WVPRequestMatcher alloc] init];
     matcher.handler = handler;
     matcher.predicate = predicate;
     return matcher;
@@ -23,7 +23,7 @@ static NSPredicate* webViewUserAgentTest;
 
 
 // This is the proxy response object, through which we send responses
-@implementation WebViewProxyResponse {
+@implementation WVPResponse {
     NSURLProtocol* _protocol;
     NSMutableDictionary* _headers;
 }
@@ -113,14 +113,14 @@ static NSPredicate* webViewUserAgentTest;
 
 // The NSURLProtocol implementation that allows us to intercept requests.
 @interface WebViewProxyURLProtocol : NSURLProtocol
-@property (strong,nonatomic) WebViewProxyResponse* proxyResponse;
-@property (strong,nonatomic) WebViewProxyRequestMatcher* requestMatcher;
-+ (WebViewProxyRequestMatcher*)findRequestMatcher:(NSURL*)url;
+@property (strong,nonatomic) WVPResponse* proxyResponse;
+@property (strong,nonatomic) WVPRequestMatcher* requestMatcher;
++ (WVPRequestMatcher*)findRequestMatcher:(NSURL*)url;
 @end
 @implementation WebViewProxyURLProtocol
 @synthesize proxyResponse=_proxyResponse, requestMatcher=_requestMatcher;
-+ (WebViewProxyRequestMatcher *)findRequestMatcher:(NSURL *)url {
-    for (WebViewProxyRequestMatcher* requestMatcher in requestMatchers) {
++ (WVPRequestMatcher *)findRequestMatcher:(NSURL *)url {
+    for (WVPRequestMatcher* requestMatcher in requestMatchers) {
         if ([requestMatcher.predicate evaluateWithObject:url]) {
             return requestMatcher;
         }
@@ -145,7 +145,7 @@ static NSPredicate* webViewUserAgentTest;
     if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
         // TODO How to handle cachedResponse?
         self.requestMatcher = [self.class findRequestMatcher:request.URL];
-        self.proxyResponse = [[WebViewProxyResponse alloc] _initWithProtocol:self];
+        self.proxyResponse = [[WVPResponse alloc] _initWithProtocol:self];
     }
     return self;
 }
@@ -160,15 +160,15 @@ static NSPredicate* webViewUserAgentTest;
 
 // This is the actual WebViewProxy API
 @implementation WebViewProxy
-+ (void)handleRequestsWithScheme:(NSString *)scheme handler:(WebViewProxyHandler)handler {
++ (void)handleRequestsWithScheme:(NSString *)scheme handler:(WVPHandler)handler {
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"scheme MATCHES[cd] %@", scheme];
     [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handleRequestsWithHost:(NSString *)host handler:(WebViewProxyHandler)handler {
++ (void)handleRequestsWithHost:(NSString *)host handler:(WVPHandler)handler {
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@", host];
     [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handleRequestsWithHost:(NSString *)host pathPrefix:(NSString *)pathPrefix handler:(WebViewProxyHandler)handler {
++ (void)handleRequestsWithHost:(NSString *)host pathPrefix:(NSString *)pathPrefix handler:(WVPHandler)handler {
     if (![pathPrefix hasPrefix:@"/"]) {
         // Paths always being with "/", so help out people who forget it
         pathPrefix = [@"/" stringByAppendingString:pathPrefix];
@@ -177,7 +177,7 @@ static NSPredicate* webViewUserAgentTest;
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@ AND path MATCHES[cd] %@", host, pathPrefixRegex];
     [self handleRequestsMatching:predicate handler:handler];
 }
-+ (void)handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler {
++ (void)handleRequestsMatching:(NSPredicate*)predicate handler:(WVPHandler)handler {
     if (!requestMatchers) {
         requestMatchers = [NSMutableArray array];
         webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
@@ -185,6 +185,6 @@ static NSPredicate* webViewUserAgentTest;
         [NSURLProtocol registerClass:[WebViewProxyURLProtocol class]];
     }
     // Match on any property of NSURL, e.g. "scheme MATCHES 'http' AND host MATCHES 'www.google.com'"
-    [requestMatchers addObject:[WebViewProxyRequestMatcher matchWithPredicate:predicate handler:handler]];
+    [requestMatchers addObject:[WVPRequestMatcher matchWithPredicate:predicate handler:handler]];
 }
 @end

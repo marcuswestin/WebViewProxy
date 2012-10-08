@@ -10,27 +10,27 @@ API
 
 ### 1: Register handlers with `WebViewProxy` to intercept requests
 
-##### + (void) handleRequestsWithScheme:(NSString\*)scheme handler:(WebViewProxyHandler)handler;
+##### + (void) handleRequestsWithScheme:(NSString\*)scheme handler:(WVPHandler)handler;
 
 Intercept all UIWebView requests with the given scheme.
 
 Examples:
 
-	[WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(WVPResponse *response) {
 		[response respondWithText:@"Hi!"];
 	}];
 
-##### + (void) handleRequestsWithHost:(NSString\*)host handler:(WebViewProxyHandler)handler;
+##### + (void) handleRequestsWithHost:(NSString\*)host handler:(WVPHandler)handler;
 
 Intercept all UIWebView requests with the given host.
 
 Examples
 	
-	[WebViewProxy handleRequestsWithHost:@"foo" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"foo" handler:^(WVPResponse *response) {
 		[response respondWithText:@"Hi!"];
 	}];
 
-##### + (void) handleRequestsWithHost:(NSString\*)host pathPrefix:(NSString\*)pathPrefix handler:(WebViewProxyHandler)handler;
+##### + (void) handleRequestsWithHost:(NSString\*)host pathPrefix:(NSString\*)pathPrefix handler:(WVPHandler)handler;
 
 Intercept all UIWebView requests matching the given URL path prefix for the given host.
 
@@ -38,34 +38,34 @@ For example, a handler registered with `[WebViewProxy handleRequestsWithHost:@"f
 
 Examples
 	
-	[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WVPResponse *response) {
 		[response respondWithText:@"Hi!"];
 	}];
 
-##### + (void) handleRequestsMatching:(NSPredicate\*)predicate handler:(WebViewProxyHandler)handler;
+##### + (void) handleRequestsMatching:(NSPredicate\*)predicate handler:(WVPHandler)handler;
 
 Intercept all UIWebView requests where the `NSURL` matches the given `NSPredicate`.
 
 Examples
 
-	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(WVPResponse *response) {
 		[response respondWithText:@"Hi!"];
 	}];
 	
-	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(WVPResponse *response) {
 		[response respondWithText:@"Hi!"];
 	}];
 
 
-### 2: Respond through the `WebViewProxyResponse`
+### 2: Respond through the `WVPResponse`
 
-All registered handlers are given a `WebViewProxyRespone* response`. You respond to the request by calling methods on this object.
+All registered handlers are given a `WVPRespone* response`. You respond to the request by calling methods on this object.
 
 There are 3 type of APIs for responding to a request
 
 - High level API for responding with an image, text, html or json
 - Low level API for responding with the given HTTP headers and NSData
-- Piping API for piping the data from a `NSURLConnection` data through to the `WebViewProxyResponse`
+- Piping API for piping the data from a `NSURLConnection` data through to the `WVPResponse`
 
 #### High level response API
 
@@ -76,7 +76,7 @@ Respond with an image (sent with Content-Type "image/png" by default, or "image/
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(WVPResponse *response) {
 		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
 		[response respondWithImage:image];
 	}];
@@ -84,21 +84,21 @@ Examples
 ##### - (void) respondWithText:(NSString\*)text;
 Respond with a text response (sent with Content-Type "text/plain"):
 
-	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WVPResponse *response) {
 		[response respondWithText:@"Hi!"];
 	}];
 
 ##### - (void) respondWithHTML:(NSString\*)html;
 Respond with HTML (sent with Content-Type "text/html"):
 
-	[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(WVPResponse *response) {
 		[response respondWithText:@"<div class='notification'>Hi!</div>"];
 	}];
 
 ##### - (void) respondWithJSON:(NSDictionary\*)jsonObject;
 Respond with JSON (sent with Content-Type "application/json"):
 
-	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WebViewProxyResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WVPResponse *response) {
 		NSDictionary* jsonObject = [NSDictionary dictionaryWithObject:@"foo" forKey:@"bar"];
 		[response respondWithJSON:jsonObject]; // sends '{ "bar":"foo" }'
 	}];
@@ -159,7 +159,7 @@ Examples
 
 #### Piping response API
 
-Pipe an NSURLResponse and its data into the WebViewProxyResponse. This makes it simple to e.g. proxy a request and its response through an NSURLConnection.
+Pipe an `NSURLResponse` and its data into the `WVPResponse`. This makes it simple to e.g. proxy a request and its response through an NSURLConnection.
 
 Examples to be written.
 

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface WebViewProxyResponse : NSObject
+@interface WVPResponse : NSObject
 @property (strong,nonatomic,readonly) NSURLRequest* request;
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 // High level API
@@ -22,12 +22,12 @@
 @end
 
 // Our block definitions
-typedef void (^WebViewProxyHandler)(WebViewProxyResponse* response);
+typedef void (^WVPHandler)(WVPResponse* response);
 
 // The actual WebViewProxy API itself
 @interface WebViewProxy : NSObject
-+ (void) handleRequestsWithScheme:(NSString*)scheme handler:(WebViewProxyHandler)handler;
-+ (void) handleRequestsWithHost:(NSString*)host handler:(WebViewProxyHandler)handler;
-+ (void) handleRequestsWithHost:(NSString*)host pathPrefix:(NSString*)pathPrefix handler:(WebViewProxyHandler)handler;
-+ (void) handleRequestsMatching:(NSPredicate*)predicate handler:(WebViewProxyHandler)handler;
++ (void) handleRequestsWithScheme:(NSString*)scheme handler:(WVPHandler)handler;
++ (void) handleRequestsWithHost:(NSString*)host handler:(WVPHandler)handler;
++ (void) handleRequestsWithHost:(NSString*)host pathPrefix:(NSString*)pathPrefix handler:(WVPHandler)handler;
++ (void) handleRequestsMatching:(NSPredicate*)predicate handler:(WVPHandler)handler;
 @end

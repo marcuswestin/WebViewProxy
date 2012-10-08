@@ -6,34 +6,32 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    [WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(WVPResponse *response) {
         [response respondWithText:@"Hi!"];
     }];
     
-    [WebViewProxy handleRequestsWithHost:@"foo.com" handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsWithHost:@"foo.com" handler:^(WVPResponse *response) {
         [response respondWithText:@"Hi!"];
     }];
     
-    [WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WVPResponse *response) {
         [response respondWithText:@"Hi!"];
     }];
     
-    [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(WVPResponse *response) {
         [response respondWithText:@"Hi!"];
     }];
 
-    [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(WVPResponse *response) {
         [response respondWithText:@"Hi!"];
     }];
     
-    
-    
-    [WebViewProxy handleRequestsWithHost:@"google_logo" handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsWithHost:@"google_logo" handler:^(WVPResponse *response) {
         UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
         [response respondWithImage:image];
     }];
 
-    [WebViewProxy handleRequestsWithHost:@"google_logo_bw" handler:^(WebViewProxyResponse *response) {
+    [WebViewProxy handleRequestsWithHost:@"google_logo_bw" handler:^(WVPResponse *response) {
         UIImage* originalImage = [UIImage imageNamed:@"GoogleLogo.png"];
         CGColorSpaceRef colorSapce = CGColorSpaceCreateDeviceGray();
         CGContextRef context = CGBitmapContextCreate(nil, originalImage.size.width, originalImage.size.height, 8, originalImage.size.width, colorSapce, kCGImageAlphaNone);
