@@ -14,6 +14,10 @@
         [response respondWithText:@"Hi!"];
     }];
     
+    [WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(WVPResponse *response) {
+        [response respondWithText:@"Hi!"];
+    }];
+
     [WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WVPResponse *response) {
         [response respondWithText:@"Hi!"];
     }];

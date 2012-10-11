@@ -28,6 +28,7 @@ typedef void (^WVPHandler)(WVPResponse* response);
 @interface WebViewProxy : NSObject
 + (void) handleRequestsWithScheme:(NSString*)scheme handler:(WVPHandler)handler;
 + (void) handleRequestsWithHost:(NSString*)host handler:(WVPHandler)handler;
++ (void) handleRequestsWithHost:(NSString*)host path:(NSString*)path handler:(WVPHandler)handler;
 + (void) handleRequestsWithHost:(NSString*)host pathPrefix:(NSString*)pathPrefix handler:(WVPHandler)handler;
 + (void) handleRequestsMatching:(NSPredicate*)predicate handler:(WVPHandler)handler;
 @end

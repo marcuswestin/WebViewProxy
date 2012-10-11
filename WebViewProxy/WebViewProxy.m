@@ -159,6 +159,9 @@ static NSPredicate* webViewUserAgentTest;
 
 
 // This is the actual WebViewProxy API
+@interface WebViewProxy (hidden)
++ (NSString *)_normalizePath:(NSString *)path;
+@end
 @implementation WebViewProxy
 + (void)handleRequestsWithScheme:(NSString *)scheme handler:(WVPHandler)handler {
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"scheme MATCHES[cd] %@", scheme];
@@ -168,11 +171,13 @@ static NSPredicate* webViewUserAgentTest;
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@", host];
     [self handleRequestsMatching:predicate handler:handler];
 }
++ (void)handleRequestsWithHost:(NSString *)host path:(NSString *)path handler:(WVPHandler)handler {
+    path = [self _normalizePath:path];
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@ AND path MATCHES[cd] %@", host, path];
+    [self handleRequestsMatching:predicate handler:handler];
+}
 + (void)handleRequestsWithHost:(NSString *)host pathPrefix:(NSString *)pathPrefix handler:(WVPHandler)handler {
-    if (![pathPrefix hasPrefix:@"/"]) {
-        // Paths always being with "/", so help out people who forget it
-        pathPrefix = [@"/" stringByAppendingString:pathPrefix];
-    }
+    pathPrefix = [self _normalizePath:pathPrefix];
     NSString* pathPrefixRegex = [NSString stringWithFormat:@"^%@.*", pathPrefix];
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"host MATCHES[cd] %@ AND path MATCHES[cd] %@", host, pathPrefixRegex];
     [self handleRequestsMatching:predicate handler:handler];
@@ -186,5 +191,14 @@ static NSPredicate* webViewUserAgentTest;
     }
     // Match on any property of NSURL, e.g. "scheme MATCHES 'http' AND host MATCHES 'www.google.com'"
     [requestMatchers addObject:[WVPRequestMatcher matchWithPredicate:predicate handler:handler]];
+}
+@end
+@implementation WebViewProxy (hidden)
++ (NSString *)_normalizePath:(NSString *)path {
+    if (![path hasPrefix:@"/"]) {
+        // Paths always being with "/", so help out people who forget it
+        path = [@"/" stringByAppendingString:path];
+    }
+    return path;
 }
 @end

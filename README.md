@@ -30,9 +30,21 @@ Examples
 		[response respondWithText:@"Hi!"];
 	}];
 
+
+##### + (void) handleRequestsWithHost:(NSString\*)host path:(NSString\*)path handler:(WVPHandler)handler;
+
+Intercept all UIWebView requests matching the given host and URL path.
+
+Examples
+
+	[WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(WVPResponse *response) {
+		[response respondWithText:@"Hi!"];
+	}];
+
+
 ##### + (void) handleRequestsWithHost:(NSString\*)host pathPrefix:(NSString\*)pathPrefix handler:(WVPHandler)handler;
 
-Intercept all UIWebView requests matching the given URL path prefix for the given host.
+Intercept all UIWebView requests matching the given host and URL path prefix.
 
 For example, a handler registered with `[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:...]` will intercept requests for `http://foo.com/bar`, `https://foo.com/bar/cat?wee=yes`, `http://foo.com/bar/arbitrarily/long/subpath`, etc.
 
