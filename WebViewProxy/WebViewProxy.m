@@ -160,9 +160,9 @@ static NSPredicate* webViewProxyLoopDetection;
         _correctedRequest = request.mutableCopy;
         NSString* correctedFragment;
         if (_correctedRequest.URL.fragment) {
-            correctedFragment = @"#__webviewproxyreq__";
-        } else {
             correctedFragment = @"__webviewproxyreq__";
+        } else {
+            correctedFragment = @"#__webviewproxyreq__";
         }
         _correctedRequest.URL = [NSURL URLWithString:[request.URL.absoluteString stringByAppendingString:correctedFragment]];
 
