@@ -41,20 +41,21 @@ static NSPredicate* webViewUserAgentTest;
 }
 // High level API
 - (void)respondWithImage:(UIImage *)image {
-    NSURL* url = _protocol.request.URL;
-    NSString* mimeType = nil;
     NSData* data = nil;
-    if ([url.pathExtension isEqualToString:@"jpg"] || [url.pathExtension isEqualToString:@"jpeg"]) {
+    NSString* mimeType = nil;
+    NSString* extension = self.request.URL.pathExtension;
+    if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
         mimeType = @"image/jpg";
         data = UIImageJPEGRepresentation(image, 1.0);
     } else {
-        if (![url.pathExtension isEqualToString:@"png"]) {
-            NSLog(@"WARNING WebViewProxy respondWithImage called for unknown type \"%@\". Defaulting to image/png", url.absoluteString);
+        if (![extension isEqualToString:@"png"]) {
+            NSLog(@"WARNING WebViewProxy respondWithImage called for unknown type \"%@\". Defaulting to image/png", self.request.URL);
         }
         // Default to PNG
         mimeType = @"image/png";
         data = UIImagePNGRepresentation(image);
     }
+
     [self respondWithData:data mimeType:mimeType];
 }
 - (void)respondWithJSON:(NSDictionary *)jsonObject {
@@ -82,6 +83,18 @@ static NSPredicate* webViewUserAgentTest;
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType statusCode:(NSInteger)statusCode {
+    if (!mimeType) {
+        NSString* extension = _protocol.request.URL.pathExtension;
+        if ([extension isEqualToString:@"png"]) {
+            mimeType = @"image/png";
+        } else if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
+            mimeType = @"image/jpg";
+        } else if ([extension isEqualToString:@"woff"]) {
+            mimeType = @"font/woff";
+        } else if ([extension isEqualToString:@"ttf"]) {
+            mimeType = @"font/opentype";
+        }
+    }
     if (![_headers objectForKey:@"Content-Type"]) {
         [_headers setValue:mimeType forKey:@"Content-Type"];
     }

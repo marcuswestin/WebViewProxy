@@ -141,6 +141,8 @@ Examples
 
 Respond with the given data and mime type (the mime type gets sent as the HTTP header `Content-Type`).
 
+If mimeType is nil, WebWiewProxy attempts to infer it from the request URL path extension.
+
 Examples
 
 	NSString* greeting = @"Hi!";
@@ -150,6 +152,8 @@ Examples
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType statusCode:(NSInteger)statusCode;
 
 Respond with the given data, mime type and HTTP status code (the mime type gets sent as the HTTP header `Content-Type`).
+
+If mimeType is nil, WebWiewProxy attempts to infer it from the request URL path extension.
 
 Examples
 
