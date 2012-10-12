@@ -2,7 +2,7 @@
 
 static NSMutableArray* requestMatchers;
 static NSPredicate* webViewUserAgentTest;
-
+static NSPredicate* webViewProxyLoopDetection;
 
 // A request matcher, which matches a UIWebView request to a registered WebViewProxyHandler
 @interface WVPRequestMatcher : NSObject
@@ -36,20 +36,17 @@ static NSPredicate* webViewUserAgentTest;
     }
     return self;
 }
-- (NSURLRequest *)request {
-    return _protocol.request;
-}
 // High level API
 - (void)respondWithImage:(UIImage *)image {
     NSData* data = nil;
     NSString* mimeType = nil;
-    NSString* extension = self.request.URL.pathExtension;
+    NSString* extension = _protocol.request.URL.pathExtension;
     if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
         mimeType = @"image/jpg";
         data = UIImageJPEGRepresentation(image, 1.0);
     } else {
         if (![extension isEqualToString:@"png"]) {
-            NSLog(@"WARNING WebViewProxy respondWithImage called for unknown type \"%@\". Defaulting to image/png", self.request.URL);
+            NSLog(@"WARNING WebViewProxy respondWithImage called for unknown type \"%@\". Defaulting to image/png", _protocol.request.URL);
         }
         // Default to PNG
         mimeType = @"image/png";
@@ -130,7 +127,9 @@ static NSPredicate* webViewUserAgentTest;
 @property (strong,nonatomic) WVPRequestMatcher* requestMatcher;
 + (WVPRequestMatcher*)findRequestMatcher:(NSURL*)url;
 @end
-@implementation WebViewProxyURLProtocol
+@implementation WebViewProxyURLProtocol {
+    NSMutableURLRequest* _correctedRequest;
+}
 @synthesize proxyResponse=_proxyResponse, requestMatcher=_requestMatcher;
 + (WVPRequestMatcher *)findRequestMatcher:(NSURL *)url {
     for (WVPRequestMatcher* requestMatcher in requestMatchers) {
@@ -143,6 +142,7 @@ static NSPredicate* webViewUserAgentTest;
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     NSString* userAgent = [request.allHTTPHeaderFields valueForKey:@"User-Agent"];
     if (userAgent && ![webViewUserAgentTest evaluateWithObject:userAgent]) { return NO; }
+    if ([webViewProxyLoopDetection evaluateWithObject:request.URL]) { return NO; }
     return ([self findRequestMatcher:request.URL] != nil);
 }
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
@@ -157,13 +157,22 @@ static NSPredicate* webViewUserAgentTest;
 - (id)initWithRequest:(NSURLRequest *)request cachedResponse:(NSCachedURLResponse *)cachedResponse client:(id<NSURLProtocolClient>)client {
     if (self = [super initWithRequest:request cachedResponse:cachedResponse client:client]) {
         // TODO How to handle cachedResponse?
+        _correctedRequest = request.mutableCopy;
+        NSString* correctedFragment;
+        if (_correctedRequest.URL.fragment) {
+            correctedFragment = @"#__webviewproxyreq__";
+        } else {
+            correctedFragment = @"__webviewproxyreq__";
+        }
+        _correctedRequest.URL = [NSURL URLWithString:[request.URL.absoluteString stringByAppendingString:correctedFragment]];
+
         self.requestMatcher = [self.class findRequestMatcher:request.URL];
         self.proxyResponse = [[WVPResponse alloc] _initWithProtocol:self];
     }
     return self;
 }
 - (void)startLoading {
-    self.requestMatcher.handler(self.proxyResponse);
+    self.requestMatcher.handler(_correctedRequest, self.proxyResponse);
 }
 - (void)stopLoading {
     // TODO Notify self.requestMatcher to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];. Regardless of if an onStopLoading handler is registered, requestMather needs to stop sending signals to _client
@@ -199,6 +208,7 @@ static NSPredicate* webViewUserAgentTest;
     if (!requestMatchers) {
         requestMatchers = [NSMutableArray array];
         webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
+        webViewProxyLoopDetection = [NSPredicate predicateWithFormat:@"self.fragment MATCHES '__webviewproxyreq__'"];
         // e.g. "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Mobile/10A403"
         [NSURLProtocol registerClass:[WebViewProxyURLProtocol class]];
     }

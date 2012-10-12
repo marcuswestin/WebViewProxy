@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 
 @interface WVPResponse : NSObject
-@property (strong,nonatomic,readonly) NSURLRequest* request;
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 // High level API
 - (void) respondWithImage:(UIImage*)image;
@@ -22,7 +21,7 @@
 @end
 
 // Our block definitions
-typedef void (^WVPHandler)(WVPResponse* response);
+typedef void (^WVPHandler)(NSURLRequest* req, WVPResponse* res);
 
 // The actual WebViewProxy API itself
 @interface WebViewProxy : NSObject
