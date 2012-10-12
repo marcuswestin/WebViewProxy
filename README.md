@@ -16,8 +16,8 @@ Intercept all UIWebView requests with the given scheme.
 
 Examples:
 
-	[WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 
 ##### + (void) handleRequestsWithHost:(NSString\*)host handler:(WVPHandler)handler;
@@ -26,8 +26,8 @@ Intercept all UIWebView requests with the given host.
 
 Examples
 	
-	[WebViewProxy handleRequestsWithHost:@"foo" handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsWithHost:@"foo" handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 
 
@@ -37,8 +37,8 @@ Intercept all UIWebView requests matching the given host and URL path.
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 
 
@@ -50,8 +50,8 @@ For example, a handler registered with `[WebViewProxy handleRequestsWithHost:@"f
 
 Examples
 	
-	[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 
 ##### + (void) handleRequestsMatching:(NSPredicate\*)predicate handler:(WVPHandler)handler;
@@ -60,18 +60,18 @@ Intercept all UIWebView requests where the `NSURL` matches the given `NSPredicat
 
 Examples
 
-	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 	
-	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 
 
 ### 2: Respond through the `WVPResponse`
 
-All registered handlers are given a `WVPRespone* response`. You respond to the request by calling methods on this object.
+All registered handlers are given a `WVPRespone* res`. You respond to the request by calling methods on this object.
 
 There are 3 type of APIs for responding to a request
 
@@ -88,31 +88,31 @@ Respond with an image (sent with Content-Type "image/png" by default, or "image/
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(WVPResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(NSURLRequest* req, WVPResponse *res) {
 		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
-		[response respondWithImage:image];
+		[res respondWithImage:image];
 	}];
 
 ##### - (void) respondWithText:(NSString\*)text;
 Respond with a text response (sent with Content-Type "text/plain"):
 
-	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WVPResponse *response) {
-		[response respondWithText:@"Hi!"];
+	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"Hi!"];
 	}];
 
 ##### - (void) respondWithHTML:(NSString\*)html;
 Respond with HTML (sent with Content-Type "text/html"):
 
-	[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(WVPResponse *response) {
-		[response respondWithText:@"<div class='notification'>Hi!</div>"];
+	[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+		[res respondWithText:@"<div class='notification'>Hi!</div>"];
 	}];
 
 ##### - (void) respondWithJSON:(NSDictionary\*)jsonObject;
 Respond with JSON (sent with Content-Type "application/json"):
 
-	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(WVPResponse *response) {
+	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(NSURLRequest* req, WVPResponse *res) {
 		NSDictionary* jsonObject = [NSDictionary dictionaryWithObject:@"foo" forKey:@"bar"];
-		[response respondWithJSON:jsonObject]; // sends '{ "bar":"foo" }'
+		[res respondWithJSON:jsonObject]; // sends '{ "bar":"foo" }'
 	}];
 
 
@@ -125,17 +125,17 @@ Respond with the given HTTP status error code and text.
 
 Examples
 
-	[response respondWithError:400 text:@"Bad request"];
-	[response respondWithError:404 text:@"Not found"];
+	[res respondWithError:400 text:@"Bad request"];
+	[res respondWithError:404 text:@"Not found"];
 
 ##### - (void) setHeader:(NSString\*)headerName value:(NSString\*)headerValue;
 Set response headers before responding.
 
 Examples
 
-	[response setHeader:@"Content-Type" value:@"image/gif"];
-	[response setHeader:@"Content-Type" value:@"audio/wav"];
-	[response setHeader:@"Host" value:@"WebViewProxy"];
+	[res setHeader:@"Content-Type" value:@"image/gif"];
+	[res setHeader:@"Content-Type" value:@"audio/wav"];
+	[res setHeader:@"Host" value:@"WebViewProxy"];
 
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType;
 
@@ -147,7 +147,7 @@ Examples
 
 	NSString* greeting = @"Hi!";
 	NSData* data = [greeting dataUsingEncoding:NSUTF8StringEncoding];
-	[response respondWithData:data mimeType:@"text/plain"];
+	[res respondWithData:data mimeType:@"text/plain"];
 
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType statusCode:(NSInteger)statusCode;
 
@@ -158,9 +158,9 @@ If mimeType is nil, WebWiewProxy attempts to infer it from the request URL path 
 Examples
 
 	NSData* data = [@"<div>Item has been created</div>" dataUsingEncoding:NSUTF8StringEncoding];
-	[response respondWithData:data mimeType:@"text/html" statusCode:201];
-	[response respondWithData:nil mimeType:nil statusCode:304]; // HTTP status code 304 "Not modified"
-	[response respondWithData:nil mimeType:nil statusCode:204]; // HTTP status code 204 "No Content"
+	[res respondWithData:data mimeType:@"text/html" statusCode:201];
+	[res respondWithData:nil mimeType:nil statusCode:304]; // HTTP status code 304 "Not modified"
+	[res respondWithData:nil mimeType:nil statusCode:204]; // HTTP status code 204 "No Content"
 
 ##### NSURLCacheStoragePolicy cachePolicy (property)
 
