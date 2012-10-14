@@ -4,6 +4,7 @@
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 // High level API
 - (void) respondWithImage:(UIImage*)image;
+- (void) respondWithImage:(UIImage*)image mimeType:(NSString*)mimeType;
 - (void) respondWithText:(NSString*)text;
 - (void) respondWithHTML:(NSString*)html;
 - (void) respondWithJSON:(NSDictionary*)jsonObject;

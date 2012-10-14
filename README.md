@@ -88,9 +88,19 @@ Respond with an image (sent with Content-Type "image/png" by default, or "image/
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[WebViewProxy handleRequestsWithHost:@"imageExample" path:@"GoogleLogo.png" handler:^(NSURLRequest* req, WVPResponse *res) {
 		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
 		[res respondWithImage:image];
+	}];
+
+##### - (void) respondWithImage:(UIImage\*)image mimeType:(NSString*)mimeType;
+Respond with an image and the given mime type.
+
+Examples
+
+	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
+		[res respondWithImage:image mimeType:@"image/png"];
 	}];
 
 ##### - (void) respondWithText:(NSString\*)text;

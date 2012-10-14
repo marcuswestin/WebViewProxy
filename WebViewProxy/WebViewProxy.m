@@ -38,21 +38,26 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 // High level API
 - (void)respondWithImage:(UIImage *)image {
+    [self respondWithImage:image mimeType:nil];
+}
+- (void)respondWithImage:(UIImage *)image mimeType:(NSString *)mimeType {
     NSData* data = nil;
-    NSString* mimeType = nil;
-    NSString* extension = _protocol.request.URL.pathExtension;
-    if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
-        mimeType = @"image/jpg";
-        data = UIImageJPEGRepresentation(image, 1.0);
-    } else {
-        if (![extension isEqualToString:@"png"]) {
-            NSLog(@"WARNING WebViewProxy respondWithImage called for unknown type \"%@\". Defaulting to image/png", _protocol.request.URL);
+    if (!mimeType) {
+        NSString* extension = _protocol.request.URL.pathExtension;
+        if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
+            mimeType = @"image/jpg";
+        } else {
+            if (![extension isEqualToString:@"png"]) {
+                NSLog(@"WebViewProxy: responding with default mimetype image/png");
+                mimeType = @"image/png";
+            }
         }
-        // Default to PNG
-        mimeType = @"image/png";
+    }
+    if ([mimeType isEqualToString:@"image/jpg"]) {
+        data = UIImageJPEGRepresentation(image, 1.0);
+    } else if ([mimeType isEqualToString:@"image/png"]) {
         data = UIImagePNGRepresentation(image);
     }
-
     [self respondWithData:data mimeType:mimeType];
 }
 - (void)respondWithJSON:(NSDictionary *)jsonObject {
