@@ -49,8 +49,8 @@ static NSPredicate* webViewProxyLoopDetection;
         } else {
             if (![extension isEqualToString:@"png"]) {
                 NSLog(@"WebViewProxy: responding with default mimetype image/png");
-                mimeType = @"image/png";
             }
+            mimeType = @"image/png";
         }
     }
     if ([mimeType isEqualToString:@"image/jpg"]) {
