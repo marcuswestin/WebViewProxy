@@ -50,27 +50,27 @@ static NSOperationQueue* queue;
     
     // More examples that won't do anything in this app
     [WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(NSURLRequest* req, WVPResponse *res) {
-        [res respondWithText:@"Hi!"];
+        // ...
     }];
     
     [WebViewProxy handleRequestsWithHost:@"foo.com" handler:^(NSURLRequest* req, WVPResponse *res) {
-        [res respondWithText:@"Hi!"];
+        // ...
     }];
     
     [WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
-        [res respondWithText:@"Hi!"];
+        // ...
     }];
     
     [WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
-        [res respondWithText:@"Hi!"];
+        // ...
     }];
     
     [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(NSURLRequest* req, WVPResponse *res) {
-        [res respondWithText:@"Hi!"];
+        // ...
     }];
     
     [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"] handler:^(NSURLRequest* req, WVPResponse *res) {
-        [res respondWithText:@"Hi!"];
+        // ...
     }];
 
     return YES;
