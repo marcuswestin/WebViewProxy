@@ -85,20 +85,24 @@ static NSPredicate* webViewProxyLoopDetection;
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType statusCode:(NSInteger)statusCode {
-    if (!mimeType) {
-        NSString* extension = _protocol.request.URL.pathExtension;
-        if ([extension isEqualToString:@"png"]) {
-            mimeType = @"image/png";
-        } else if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
-            mimeType = @"image/jpg";
-        } else if ([extension isEqualToString:@"woff"]) {
-            mimeType = @"font/woff";
-        } else if ([extension isEqualToString:@"ttf"]) {
-            mimeType = @"font/opentype";
-        }
-    }
     if (![_headers objectForKey:@"Content-Type"]) {
-        [_headers setValue:mimeType forKey:@"Content-Type"];
+        if (!mimeType) {
+            NSString* extension = _protocol.request.URL.pathExtension;
+            if ([extension isEqualToString:@"png"]) {
+                mimeType = @"image/png";
+            } else if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
+                mimeType = @"image/jpg";
+            } else if ([extension isEqualToString:@"woff"]) {
+                mimeType = @"font/woff";
+            } else if ([extension isEqualToString:@"ttf"]) {
+                mimeType = @"font/opentype";
+            } else if ([extension isEqualToString:@"m4a"]) {
+                mimeType = @"audio/mp4a-latm";
+            }
+        }
+        if (mimeType) {
+            [_headers setValue:mimeType forKey:@"Content-Type"];
+        }
     }
     if (![_headers objectForKey:@"Content-Length"]) {
         [_headers setValue:[NSString stringWithFormat:@"%d", data.length] forKey:@"Content-Length"];
