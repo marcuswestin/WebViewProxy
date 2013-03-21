@@ -74,7 +74,7 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 // Low level API
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
-    [_headers setValue:headerValue forKey:headerName];
+    _headers[headerName] = headerValue;
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
     [self respondWithData:data mimeType:mimeType statusCode:200];
@@ -85,7 +85,7 @@ static NSPredicate* webViewProxyLoopDetection;
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType statusCode:(NSInteger)statusCode {
-    if (![_headers objectForKey:@"Content-Type"]) {
+    if (!_headers[@"Content-Type"]) {
         if (!mimeType) {
             NSString* extension = _protocol.request.URL.pathExtension;
             if ([extension isEqualToString:@"png"]) {
@@ -101,11 +101,11 @@ static NSPredicate* webViewProxyLoopDetection;
             }
         }
         if (mimeType) {
-            [_headers setValue:mimeType forKey:@"Content-Type"];
+            _headers[@"Content-Type"] = mimeType;
         }
     }
-    if (![_headers objectForKey:@"Content-Length"]) {
-        [_headers setValue:[NSString stringWithFormat:@"%d", data.length] forKey:@"Content-Length"];
+    if (!_headers[@"Content-Length"]) {
+        _headers[@"Content-Length"] = [NSString stringWithFormat:@"%d", data.length];
     }
     NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_protocol.request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
     [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:_cachePolicy];
@@ -149,7 +149,7 @@ static NSPredicate* webViewProxyLoopDetection;
     return nil;
 }
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
-    NSString* userAgent = [request.allHTTPHeaderFields valueForKey:@"User-Agent"];
+    NSString* userAgent = request.allHTTPHeaderFields[@"User-Agent"];
     if (userAgent && ![webViewUserAgentTest evaluateWithObject:userAgent]) { return NO; }
     if ([webViewProxyLoopDetection evaluateWithObject:request.URL]) { return NO; }
     return ([self findRequestMatcher:request.URL] != nil);
