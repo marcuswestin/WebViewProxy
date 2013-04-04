@@ -2,6 +2,7 @@
 
 @interface WVPResponse : NSObject
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
+@property (strong,nonatomic) NSURLRequest* request;
 // High level API
 - (void) respondWithImage:(UIImage*)image;
 - (void) respondWithImage:(UIImage*)image mimeType:(NSString*)mimeType;
@@ -18,7 +19,7 @@
 - (void) pipeData:(NSData*)data;
 - (void) pipeEnd;
 // Private methods
-- (id) _initWithProtocol:(NSURLProtocol*)protocol;
+- (id) _initWithRequest:(NSURLRequest*)request protocol:(NSURLProtocol*)protocol;
 @end
 
 // Our block definitions

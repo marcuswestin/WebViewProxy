@@ -24,12 +24,14 @@ static NSPredicate* webViewProxyLoopDetection;
 
 // This is the proxy response object, through which we send responses
 @implementation WVPResponse {
+    NSURLRequest* _request;
     NSURLProtocol* _protocol;
     NSMutableDictionary* _headers;
 }
-@synthesize cachePolicy=_cachePolicy;
-- (id)_initWithProtocol:(NSURLProtocol*)protocol {
+@synthesize cachePolicy=_cachePolicy, request=_request;
+- (id)_initWithRequest:(NSURLRequest *)request protocol:(NSURLProtocol*)protocol {
     if (self = [super init]) {
+        _request = request;
         _protocol = protocol;
         _headers = [NSMutableDictionary dictionary];
         _cachePolicy = NSURLCacheStorageNotAllowed;
@@ -176,7 +178,7 @@ static NSPredicate* webViewProxyLoopDetection;
         _correctedRequest.URL = [NSURL URLWithString:[request.URL.absoluteString stringByAppendingString:correctedFragment]];
 
         self.requestMatcher = [self.class findRequestMatcher:request.URL];
-        self.proxyResponse = [[WVPResponse alloc] _initWithProtocol:self];
+        self.proxyResponse = [[WVPResponse alloc] _initWithRequest:request protocol:self];
     }
     return self;
 }
