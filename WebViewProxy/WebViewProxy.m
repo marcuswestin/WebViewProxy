@@ -20,8 +20,6 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 @end
 
-
-
 // This is the proxy response object, through which we send responses
 @implementation WVPResponse {
     NSURLRequest* _request;
@@ -90,22 +88,12 @@ static NSPredicate* webViewProxyLoopDetection;
     NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
+
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType statusCode:(NSInteger)statusCode {
     if (_stopped) { return; }
     if (!_headers[@"Content-Type"]) {
         if (!mimeType) {
-            NSString* extension = _protocol.request.URL.pathExtension;
-            if ([extension isEqualToString:@"png"]) {
-                mimeType = @"image/png";
-            } else if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
-                mimeType = @"image/jpg";
-            } else if ([extension isEqualToString:@"woff"]) {
-                mimeType = @"font/woff";
-            } else if ([extension isEqualToString:@"ttf"]) {
-                mimeType = @"font/opentype";
-            } else if ([extension isEqualToString:@"m4a"]) {
-                mimeType = @"audio/mp4a-latm";
-            }
+            mimeType = [self _mimeTypeOf:_protocol.request.URL.pathExtension];
         }
         if (mimeType) {
             _headers[@"Content-Type"] = mimeType;
@@ -118,6 +106,22 @@ static NSPredicate* webViewProxyLoopDetection;
     [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:_cachePolicy];
     [_protocol.client URLProtocol:_protocol didLoadData:data];
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
+}
+- (NSString*) _mimeTypeOf:(NSString*)pathExtension {
+    static NSDictionary* mimeTypes = nil;
+    if (mimeTypes == nil) {
+        mimeTypes = @{
+                    @"png": @"image/png",
+                    @"jpg": @"image/jpg",
+                    @"jpeg": @"image/jpg",
+                    @"woff": @"font/woff",
+                    @"ttf": @"font/opentype",
+                    @"m4a": @"audio/mp4a-latm",
+                    @"js": @"application/javascript; charset=utf-8",
+                    @"html": @"text/html; charset=utf-8"
+                    };
+    }
+    return mimeTypes[pathExtension];
 }
 // Pipe API
 - (void)pipeResponse:(NSURLResponse *)response {
@@ -137,8 +141,6 @@ static NSPredicate* webViewProxyLoopDetection;
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
 @end
-
-
 
 // The NSURLProtocol implementation that allows us to intercept requests.
 @interface WebViewProxyURLProtocol : NSURLProtocol
