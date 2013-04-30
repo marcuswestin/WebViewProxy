@@ -27,6 +27,7 @@ static NSPredicate* webViewProxyLoopDetection;
     NSURLRequest* _request;
     NSURLProtocol* _protocol;
     NSMutableDictionary* _headers;
+    BOOL _stopped;
 }
 @synthesize cachePolicy=_cachePolicy, request=_request;
 - (id)_initWithRequest:(NSURLRequest *)request protocol:(NSURLProtocol*)protocol {
@@ -37,6 +38,9 @@ static NSPredicate* webViewProxyLoopDetection;
         _cachePolicy = NSURLCacheStorageNotAllowed;
     }
     return self;
+}
+- (void) _stopLoading {
+    _stopped = YES;
 }
 // High level API
 - (void)respondWithImage:(UIImage *)image {
@@ -87,6 +91,7 @@ static NSPredicate* webViewProxyLoopDetection;
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType statusCode:(NSInteger)statusCode {
+    if (_stopped) { return; }
     if (!_headers[@"Content-Type"]) {
         if (!mimeType) {
             NSString* extension = _protocol.request.URL.pathExtension;
@@ -119,13 +124,16 @@ static NSPredicate* webViewProxyLoopDetection;
     [self pipeResponse:response cachingAllowed:NO];
 }
 - (void)pipeResponse:(NSURLResponse *)response cachingAllowed:(BOOL)cachingAllowed {
+    if (_stopped) { return; }
     NSURLCacheStoragePolicy cachePolicy = cachingAllowed ? NSURLCacheStorageAllowed : NSURLCacheStorageNotAllowed;
     [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:cachePolicy];
 }
 - (void)pipeData:(NSData *)data {
+    if (_stopped) { return; }
     [_protocol.client URLProtocol:_protocol didLoadData:data];
 }
 - (void)pipeEnd {
+    if (_stopped) { return; }
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
 @end
@@ -186,7 +194,8 @@ static NSPredicate* webViewProxyLoopDetection;
     self.requestMatcher.handler(_correctedRequest, self.proxyResponse);
 }
 - (void)stopLoading {
-    // TODO Notify self.requestMatcher to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];. Regardless of if an onStopLoading handler is registered, requestMather needs to stop sending signals to _client
+    [self.proxyResponse _stopLoading];
+    // TODO Notify self.requestMatcher.handler to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];.
 }
 @end
 

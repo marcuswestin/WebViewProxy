@@ -20,6 +20,7 @@
 - (void) pipeEnd;
 // Private methods
 - (id) _initWithRequest:(NSURLRequest*)request protocol:(NSURLProtocol*)protocol;
+- (void) _stopLoading;
 @end
 
 // Our block definitions
