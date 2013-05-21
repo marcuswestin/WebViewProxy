@@ -141,13 +141,20 @@ Examples
 	[res respondWithError:404 text:@"Not found"];
 
 ##### - (void) setHeader:(NSString\*)headerName value:(NSString\*)headerValue;
-Set response headers before responding.
+Set a response header before responding.
 
 Examples
 
 	[res setHeader:@"Content-Type" value:@"image/gif"];
 	[res setHeader:@"Content-Type" value:@"audio/wav"];
 	[res setHeader:@"Host" value:@"WebViewProxy"];
+
+##### - (void) setHeaders:(NSDictionary*)headers;
+Set multiple response headers before responding.
+
+Examples
+
+	[res setHeaders:@{ @"Content-Type":@"image/gif", @"Host":@"WebViewProxy" }];
 
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType;
 

@@ -80,6 +80,11 @@ static NSPredicate* webViewProxyLoopDetection;
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
     _headers[headerName] = headerValue;
 }
+- (void)setHeaders:(NSDictionary *)headers {
+    for (NSString* headerName in headers) {
+        [self setHeader:headerName value:headers[headerName]];
+    }
+}
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
     [self respondWithData:data mimeType:mimeType statusCode:200];
 }
