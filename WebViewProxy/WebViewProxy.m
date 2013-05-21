@@ -145,6 +145,19 @@ static NSPredicate* webViewProxyLoopDetection;
     if (_stopped) { return; }
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
+// NSURLConnectionDataDelegate
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    [self pipeResponse:response];
+}
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self pipeData:data];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [self pipeEnd];
+}
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [self pipeEnd];
+}
 @end
 
 // The NSURLProtocol implementation that allows us to intercept requests.

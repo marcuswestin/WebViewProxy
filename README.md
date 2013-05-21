@@ -191,9 +191,19 @@ Examples
 	response.cachePolicy = NSURLCacheStorageAllowedInMemoryOnly;
 	response.cachePolicy = NSURLCacheStorageNotAllowed;
 
-#### Proxy requests
+#### Proxy requests to remote servers
 
-There are many ways to proxy remote requests with `WebViewProxy`. Here is an example using `NSURLConnection`:
+There are many ways to proxy remote requests with `WebViewProxy`.
+
+The easiest approach uses `WebViewProxyResponse` as a `NSURLConnection` delegate. This pipes the response through the proxy response:
+
+	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+	    NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+	    NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+	    [NSURLConnection connectionWithRequest:proxyReq delegate:res];
+	}];
+
+Another approach which sports more control but reads the entire response into memory:
 
 	NSOperationQueue* queue = [[NSOperationQueue alloc] init];
 	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
@@ -214,13 +224,10 @@ Pipe an `NSURLResponse` and its data into the `WVPResponse`. This makes it simp
 Examples to be written.
 
 ##### - (void) pipeResponse:(NSURLResponse\*)response;
-
 Pipe an NSURLResponse into the response.
 
 ##### - (void) pipeData:(NSData\*)data;
-
 Pipe data into the response.
 
 ##### - (void) pipeEnd;
-
 Finish a piped response.

@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface WVPResponse : NSObject
+@interface WVPResponse : NSObject <NSURLConnectionDataDelegate>
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 @property (strong,nonatomic) NSURLRequest* request;
 // High level API
