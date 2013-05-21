@@ -191,6 +191,21 @@ Examples
 	response.cachePolicy = NSURLCacheStorageAllowedInMemoryOnly;
 	response.cachePolicy = NSURLCacheStorageNotAllowed;
 
+#### Proxy requests
+
+There are many ways to proxy remote requests with `WebViewProxy`. Here is an example using `NSURLConnection`:
+
+	NSOperationQueue* queue = [[NSOperationQueue alloc] init];
+	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+		NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+		NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+		[NSURLConnection sendAsynchronousRequest:proxyReq queue:queue completionHandler:^(NSURLResponse* proxyRes, NSData* proxyData, NSError* proxyErr) {
+			if (proxyErr) { return [res respondWithError:203 text:@"Could not reach server"]; }
+			NSInteger statusCode = [(NSHTTPURLResponse*)proxyRes statusCode];
+			[res setHeaders:[(NSHTTPURLResponse*)proxyRes allHeaderFields]];
+			[res respondWithData:proxyData mimeType:proxyRes.MIMEType statusCode:statusCode];
+		}];
+	}];
 
 #### Piping response API
 
