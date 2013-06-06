@@ -223,9 +223,6 @@ static NSPredicate* webViewProxyLoopDetection;
 
 
 // This is the actual WebViewProxy API
-@interface WebViewProxy (hidden)
-+ (NSString *)_normalizePath:(NSString *)path;
-@end
 @implementation WebViewProxy
 + (void)handleRequestsWithScheme:(NSString *)scheme handler:(WVPHandler)handler {
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"scheme MATCHES[cd] %@", scheme];
@@ -257,8 +254,6 @@ static NSPredicate* webViewProxyLoopDetection;
     // Match on any property of NSURL, e.g. "scheme MATCHES 'http' AND host MATCHES 'www.google.com'"
     [requestMatchers addObject:[WVPRequestMatcher matchWithPredicate:predicate handler:handler]];
 }
-@end
-@implementation WebViewProxy (hidden)
 + (NSString *)_normalizePath:(NSString *)path {
     if (![path hasPrefix:@"/"]) {
         // Paths always being with "/", so help out people who forget it
