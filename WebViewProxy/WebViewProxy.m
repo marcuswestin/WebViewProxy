@@ -197,6 +197,8 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 - (void)stopLoading {
     [self.proxyResponse _stopLoading];
+    _correctedRequest = nil;
+    self.proxyResponse = nil;
     // TODO Notify self.requestMatcher.handler to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];.
 }
 @end
