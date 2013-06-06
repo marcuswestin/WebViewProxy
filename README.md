@@ -231,3 +231,9 @@ Pipe data into the response.
 
 ##### - (void) pipeEnd;
 Finish a piped response.
+
+
+Contributors
+------------
+- [@marcuswestin](https://github.com/marcuswestin) Marcus Westin (Author)
+- Ragnar Frostason
