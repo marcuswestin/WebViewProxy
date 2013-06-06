@@ -141,13 +141,20 @@ Examples
 	[res respondWithError:404 text:@"Not found"];
 
 ##### - (void) setHeader:(NSString\*)headerName value:(NSString\*)headerValue;
-Set response headers before responding.
+Set a response header before responding.
 
 Examples
 
 	[res setHeader:@"Content-Type" value:@"image/gif"];
 	[res setHeader:@"Content-Type" value:@"audio/wav"];
 	[res setHeader:@"Host" value:@"WebViewProxy"];
+
+##### - (void) setHeaders:(NSDictionary*)headers;
+Set multiple response headers before responding.
+
+Examples
+
+	[res setHeaders:@{ @"Content-Type":@"image/gif", @"Host":@"WebViewProxy" }];
 
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType;
 
@@ -184,6 +191,31 @@ Examples
 	response.cachePolicy = NSURLCacheStorageAllowedInMemoryOnly;
 	response.cachePolicy = NSURLCacheStorageNotAllowed;
 
+#### Proxy requests to remote servers
+
+There are many ways to proxy remote requests with `WebViewProxy`.
+
+The easiest approach uses `WebViewProxyResponse` as a `NSURLConnection` delegate. This pipes the response through the proxy response:
+
+	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+	    NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+	    NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+	    [NSURLConnection connectionWithRequest:proxyReq delegate:res];
+	}];
+
+Another approach which sports more control but reads the entire response into memory:
+
+	NSOperationQueue* queue = [[NSOperationQueue alloc] init];
+	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+		NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+		NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+		[NSURLConnection sendAsynchronousRequest:proxyReq queue:queue completionHandler:^(NSURLResponse* proxyRes, NSData* proxyData, NSError* proxyErr) {
+			if (proxyErr) { return [res respondWithError:203 text:@"Could not reach server"]; }
+			NSInteger statusCode = [(NSHTTPURLResponse*)proxyRes statusCode];
+			[res setHeaders:[(NSHTTPURLResponse*)proxyRes allHeaderFields]];
+			[res respondWithData:proxyData mimeType:proxyRes.MIMEType statusCode:statusCode];
+		}];
+	}];
 
 #### Piping response API
 
@@ -192,13 +224,10 @@ Pipe an `NSURLResponse` and its data into the `WVPResponse`. This makes it simp
 Examples to be written.
 
 ##### - (void) pipeResponse:(NSURLResponse\*)response;
-
 Pipe an NSURLResponse into the response.
 
 ##### - (void) pipeData:(NSData\*)data;
-
 Pipe data into the response.
 
 ##### - (void) pipeEnd;
-
 Finish a piped response.

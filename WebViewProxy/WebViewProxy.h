@@ -1,6 +1,6 @@
 #import <Foundation/Foundation.h>
 
-@interface WVPResponse : NSObject
+@interface WVPResponse : NSObject <NSURLConnectionDataDelegate>
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 @property (strong,nonatomic) NSURLRequest* request;
 // High level API
@@ -12,6 +12,7 @@
 // Low level API
 - (void) respondWithError:(NSInteger)statusCode text:(NSString*)text;
 - (void) setHeader:(NSString*)headerName value:(NSString*)headerValue;
+- (void) setHeaders:(NSDictionary*)headers;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType statusCode:(NSInteger)statusCode;
 // Pipe data API

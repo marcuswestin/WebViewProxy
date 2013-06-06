@@ -72,6 +72,12 @@ static NSOperationQueue* queue;
     [WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"] handler:^(NSURLRequest* req, WVPResponse *res) {
         // ...
     }];
+    
+    [WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+        NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+        NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+        [NSURLConnection connectionWithRequest:proxyReq delegate:res];
+    }];
 
     return YES;
 }

@@ -80,6 +80,11 @@ static NSPredicate* webViewProxyLoopDetection;
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
     _headers[headerName] = headerValue;
 }
+- (void)setHeaders:(NSDictionary *)headers {
+    for (NSString* headerName in headers) {
+        [self setHeader:headerName value:headers[headerName]];
+    }
+}
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
     [self respondWithData:data mimeType:mimeType statusCode:200];
 }
@@ -139,6 +144,19 @@ static NSPredicate* webViewProxyLoopDetection;
 - (void)pipeEnd {
     if (_stopped) { return; }
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
+}
+// NSURLConnectionDataDelegate
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
+    [self pipeResponse:response];
+}
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    [self pipeData:data];
+}
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
+    [self pipeEnd];
+}
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    [self pipeEnd];
 }
 @end
 
