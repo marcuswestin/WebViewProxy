@@ -41,11 +41,10 @@ static NSPredicate* webViewProxyLoopDetection;
     _stopped = YES;
 }
 // High level API
-- (void)respondWithImage:(UIImage *)image {
+- (void)respondWithImage:(WVPImageType *)image {
     [self respondWithImage:image mimeType:nil];
 }
-- (void)respondWithImage:(UIImage *)image mimeType:(NSString *)mimeType {
-    NSData* data = nil;
+- (void)respondWithImage:(WVPImageType *)image mimeType:(NSString *)mimeType {
     if (!mimeType) {
         NSString* extension = _protocol.request.URL.pathExtension;
         if ([extension isEqualToString:@"jpg"] || [extension isEqualToString:@"jpeg"]) {
@@ -57,13 +56,9 @@ static NSPredicate* webViewProxyLoopDetection;
             mimeType = @"image/png";
         }
     }
-    if ([mimeType isEqualToString:@"image/jpg"]) {
-        data = UIImageJPEGRepresentation(image, 1.0);
-    } else if ([mimeType isEqualToString:@"image/png"]) {
-        data = UIImagePNGRepresentation(image);
-    }
-    [self respondWithData:data mimeType:mimeType];
+    [self _respondWithImage:image mimeType:mimeType];
 }
+
 - (void)respondWithJSON:(NSDictionary *)jsonObject {
     NSData* data = [NSJSONSerialization dataWithJSONObject:jsonObject options:0 error:nil];
     [self respondWithData:data mimeType:@"application/json"];
@@ -105,7 +100,7 @@ static NSPredicate* webViewProxyLoopDetection;
         }
     }
     if (!_headers[@"Content-Length"]) {
-        _headers[@"Content-Length"] = [NSString stringWithFormat:@"%d", data.length];
+        _headers[@"Content-Length"] = [self _contentLength:data];
     }
     NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_protocol.request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
     [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:_cachePolicy];
@@ -158,6 +153,42 @@ static NSPredicate* webViewProxyLoopDetection;
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
     [self pipeEnd];
 }
+
+#ifdef WVP_OSX
+// OSX version
+- (void)_respondWithImage:(NSImage*)image mimeType:(NSString*)mimeType {
+    NSData* data = [image TIFFRepresentation];
+    NSBitmapImageRep *imageRep = [NSBitmapImageRep imageRepWithData:data];
+    if ([mimeType isEqualToString:@"image/jpg"]) {
+        data = [imageRep
+                representationUsingType:NSJPEGFileType
+                properties:@{ NSImageCompressionFactor:[NSNumber numberWithFloat:1.0] }];
+    } else if ([mimeType isEqualToString:@"image/png"]) {
+        data = [imageRep
+                representationUsingType:NSPNGFileType
+                properties:@{ NSImageInterlaced:[NSNumber numberWithBool:NO] }];
+    }
+    [self respondWithData:data mimeType:mimeType];
+}
+- (NSString*)_contentLength:(NSData*)data {
+    return [NSString stringWithFormat:@"%ld", data.length];
+}
+#else
+// iOS Version
+- (void)_respondWithImage:(UIImage*)image mimeType:(NSString*)mimeType {
+    NSData* data;
+    if ([mimeType isEqualToString:@"image/jpg"]) {
+        data = UIImageJPEGRepresentation(image, 1.0);
+    } else if ([mimeType isEqualToString:@"image/png"]) {
+        data = UIImagePNGRepresentation(image);
+    }
+    [self respondWithData:data mimeType:mimeType];
+}
+- (NSString*)_contentLength:(NSData*)data {
+    return [NSString stringWithFormat:@"%d", data.length];
+}
+#endif
+
 @end
 
 // The NSURLProtocol implementation that allows us to intercept requests.
@@ -261,4 +292,5 @@ static NSPredicate* webViewProxyLoopDetection;
     }
     return path;
 }
+
 @end

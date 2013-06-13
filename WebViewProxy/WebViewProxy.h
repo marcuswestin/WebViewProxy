@@ -1,11 +1,19 @@
 #import <Foundation/Foundation.h>
 
+#ifdef __MAC_OS_X_VERSION_MAX_ALLOWED
+    #import <Cocoa/Cocoa.h>
+    #define WVPImageType NSImage
+    #define WVP_OSX
+#else
+    #define WVPImageType UIImage
+#endif
+
 @interface WVPResponse : NSObject <NSURLConnectionDataDelegate>
 @property (assign,nonatomic) NSURLCacheStoragePolicy cachePolicy;
 @property (strong,nonatomic) NSURLRequest* request;
 // High level API
-- (void) respondWithImage:(UIImage*)image;
-- (void) respondWithImage:(UIImage*)image mimeType:(NSString*)mimeType;
+- (void) respondWithImage:(WVPImageType*)image;
+- (void) respondWithImage:(WVPImageType*)image mimeType:(NSString*)mimeType;
 - (void) respondWithText:(NSString*)text;
 - (void) respondWithHTML:(NSString*)html;
 - (void) respondWithJSON:(NSDictionary*)jsonObject;
