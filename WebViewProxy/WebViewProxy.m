@@ -255,6 +255,13 @@ static NSPredicate* webViewProxyLoopDetection;
 
 // This is the actual WebViewProxy API
 @implementation WebViewProxy
++ (void)initialize {
+    requestMatchers = [NSMutableArray array];
+    webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
+    webViewProxyLoopDetection = [NSPredicate predicateWithFormat:@"self.fragment MATCHES '__webviewproxyreq__'"];
+    // e.g. "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Mobile/10A403"
+    [NSURLProtocol registerClass:[WebViewProxyURLProtocol class]];
+}
 + (void)handleRequestsWithScheme:(NSString *)scheme handler:(WVPHandler)handler {
     NSPredicate* predicate = [NSPredicate predicateWithFormat:@"scheme MATCHES[cd] %@", scheme];
     [self handleRequestsMatching:predicate handler:handler];
@@ -275,13 +282,6 @@ static NSPredicate* webViewProxyLoopDetection;
     [self handleRequestsMatching:predicate handler:handler];
 }
 + (void)handleRequestsMatching:(NSPredicate*)predicate handler:(WVPHandler)handler {
-    if (!requestMatchers) {
-        requestMatchers = [NSMutableArray array];
-        webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
-        webViewProxyLoopDetection = [NSPredicate predicateWithFormat:@"self.fragment MATCHES '__webviewproxyreq__'"];
-        // e.g. "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Mobile/10A403"
-        [NSURLProtocol registerClass:[WebViewProxyURLProtocol class]];
-    }
     // Match on any property of NSURL, e.g. "scheme MATCHES 'http' AND host MATCHES 'www.google.com'"
     [requestMatchers addObject:[WVPRequestMatcher matchWithPredicate:predicate handler:handler]];
 }
