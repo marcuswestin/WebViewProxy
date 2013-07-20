@@ -255,6 +255,11 @@ static NSPredicate* webViewProxyLoopDetection;
 
 // This is the actual WebViewProxy API
 @implementation WebViewProxy
++ (void)load {
+#if ! __has_feature(objc_arc)
+    [NSException raise:@"ARC_Required" format:@"WebViewProxy requires Automatic Reference Counting (ARC) to function properly. Bailing."];
+#endif
+}
 + (void)initialize {
     requestMatchers = [NSMutableArray array];
     webViewUserAgentTest = [NSPredicate predicateWithFormat:@"self MATCHES '^Mozilla.*Mac OS X.*'"];
