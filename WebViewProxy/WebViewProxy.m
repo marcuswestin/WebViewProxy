@@ -26,6 +26,7 @@ static NSPredicate* webViewProxyLoopDetection;
     NSURLProtocol* _protocol;
     NSMutableDictionary* _headers;
     BOOL _stopped;
+    StopLoadingHandler _stopLoadingHandler;
 }
 @synthesize cachePolicy=_cachePolicy, request=_request;
 - (id)_initWithRequest:(NSURLRequest *)request protocol:(NSURLProtocol*)protocol {
@@ -39,6 +40,8 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 - (void) _stopLoading {
     _stopped = YES;
+    _stopLoadingHandler();
+    _stopLoadingHandler = nil;
 }
 // High level API
 - (void)respondWithImage:(WVPImageType *)image {
@@ -70,6 +73,9 @@ static NSPredicate* webViewProxyLoopDetection;
 - (void)respondWithHTML:(NSString *)html {
     NSData* data = [html dataUsingEncoding:NSUTF8StringEncoding];
     [self respondWithData:data mimeType:@"text/html"];
+}
+- (void)handleStopLoadingRequest:(StopLoadingHandler)handler {
+    _stopLoadingHandler = handler;
 }
 // Low level API
 - (void)setHeader:(NSString *)headerName value:(NSString *)headerValue {
@@ -245,10 +251,9 @@ static NSPredicate* webViewProxyLoopDetection;
     self.requestMatcher.handler(_correctedRequest, self.proxyResponse);
 }
 - (void)stopLoading {
-    [self.proxyResponse _stopLoading];
     _correctedRequest = nil;
+    [self.proxyResponse _stopLoading];
     self.proxyResponse = nil;
-    // TODO Notify self.requestMatcher.handler to stop loading, which in turn should notify WVPResponse handler (which in turn registered with e.g. [response onStopLoading:^(void) { ... }];.
 }
 @end
 

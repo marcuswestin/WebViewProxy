@@ -234,6 +234,21 @@ Pipe data into the response.
 ##### - (void) pipeEnd;
 Finish a piped response.
 
+### 3: (optional) Handle "Stop Loading" event
+
+A request handler may be told to "stop loading". This can happen e.g as a result of `cancel:` being called on the underlying `NSURLRequest`. You can get notified of this via the `handleStopLoadingRequest:` method on `WVPResponse`.
+
+This API can be used to e.g stop performing an expensive computation in your request handler.
+
+Examples
+
+	[WebViewProxy handleRequestsMatching:predicate handler:^(NSURLRequest* req, WVPResponse *res) {
+	    NSOperation* expensiveOperation = [self startExpensiveOperation];
+	    [res handleStopLoadingRequest:^{
+	        [expensiveOperation cancel]
+	    }];
+	}];
+
 
 Contributors
 ------------
