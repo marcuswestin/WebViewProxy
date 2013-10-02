@@ -20,20 +20,23 @@ Intercept all UIWebView requests with the given scheme.
 
 Examples:
 
-	[WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
+```objc
+[WebViewProxy handleRequestsWithScheme:@"my_custom_scheme" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
+```
 
 ##### + (void) handleRequestsWithHost:(NSString\*)host handler:(WVPHandler)handler;
 
 Intercept all UIWebView requests with the given host.
 
 Examples
-	
-	[WebViewProxy handleRequestsWithHost:@"foo" handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
 
+```objc
+[WebViewProxy handleRequestsWithHost:@"foo" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
+```
 
 ##### + (void) handleRequestsWithHost:(NSString\*)host path:(NSString\*)path handler:(WVPHandler)handler;
 
@@ -41,10 +44,11 @@ Intercept all UIWebView requests matching the given host and URL path.
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
-
+```objc
+[WebViewProxy handleRequestsWithHost:@"foo.com" path:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
+```
 
 ##### + (void) handleRequestsWithHost:(NSString\*)host pathPrefix:(NSString\*)pathPrefix handler:(WVPHandler)handler;
 
@@ -53,10 +57,12 @@ Intercept all UIWebView requests matching the given host and URL path prefix.
 For example, a handler registered with `[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:...]` will intercept requests for `http://foo.com/bar`, `https://foo.com/bar/cat?wee=yes`, `http://foo.com/bar/arbitrarily/long/subpath`, etc.
 
 Examples
-	
-	[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
+
+```objc
+[WebViewProxy handleRequestsWithHost:@"foo.com" pathPrefix:@"/bar" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
+```
 
 ##### + (void) handleRequestsMatching:(NSPredicate\*)predicate handler:(WVPHandler)handler;
 
@@ -64,14 +70,15 @@ Intercept all UIWebView requests where the `NSURL` matches the given `NSPredicat
 
 Examples
 
-	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
-	
-	[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
+```objc
+[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"absoluteString MATCHES[cd] '^http:'"] handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
 
+[WebViewProxy handleRequestsMatching:[NSPredicate predicateWithFormat:@"host MATCHES[cd] '[foo|bar]'"]  handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
+```
 
 ### 2: Respond through the `WVPResponse`
 
@@ -92,43 +99,52 @@ Respond with an image (sent with Content-Type "image/png" by default, or "image/
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"imageExample" path:@"GoogleLogo.png" handler:^(NSURLRequest* req, WVPResponse *res) {
-		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
-		[res respondWithImage:image];
-	}];
+```objc
+[WebViewProxy handleRequestsWithHost:@"imageExample" path:@"GoogleLogo.png" handler:^(NSURLRequest* req, WVPResponse *res) {
+	UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
+	[res respondWithImage:image];
+}];
+```
 
 ##### - (void) respondWithImage:(UIImage\*)image mimeType:(NSString*)mimeType;
 Respond with an image and the given mime type.
 
 Examples
 
-	[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(NSURLRequest* req, WVPResponse *res) {
-		UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
-		[res respondWithImage:image mimeType:@"image/png"];
-	}];
+```objc
+[WebViewProxy handleRequestsWithHost:@"imageExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+	UIImage* image = [UIImage imageNamed:@"GoogleLogo.png"];
+	[res respondWithImage:image mimeType:@"image/png"];
+}];
+```
 
 ##### - (void) respondWithText:(NSString\*)text;
 Respond with a text response (sent with Content-Type "text/plain"):
 
-	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"Hi!"];
-	}];
+```objc
+[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"Hi!"];
+}];
+```
 
 ##### - (void) respondWithHTML:(NSString\*)html;
 Respond with HTML (sent with Content-Type "text/html"):
 
-	[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(NSURLRequest* req, WVPResponse *res) {
-		[res respondWithText:@"<div class='notification'>Hi!</div>"];
-	}];
+```objc
+[WebViewProxy handleRequestsWithHost:@"htmlExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+	[res respondWithText:@"<div class='notification'>Hi!</div>"];
+}];
+```
 
 ##### - (void) respondWithJSON:(NSDictionary\*)jsonObject;
 Respond with JSON (sent with Content-Type "application/json"):
 
-	[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(NSURLRequest* req, WVPResponse *res) {
-		NSDictionary* jsonObject = [NSDictionary dictionaryWithObject:@"foo" forKey:@"bar"];
-		[res respondWithJSON:jsonObject]; // sends '{ "bar":"foo" }'
-	}];
-
+```objc
+[WebViewProxy handleRequestsWithHost:@"textExample" handler:^(NSURLRequest* req, WVPResponse *res) {
+	NSDictionary* jsonObject = [NSDictionary dictionaryWithObject:@"foo" forKey:@"bar"];
+	[res respondWithJSON:jsonObject]; // sends '{ "bar":"foo" }'
+}];
+```
 
 #### Low level response API
 
@@ -139,24 +155,30 @@ Respond with the given HTTP status error code and text.
 
 Examples
 
-	[res respondWithError:400 text:@"Bad request"];
-	[res respondWithError:404 text:@"Not found"];
+```objc
+[res respondWithError:400 text:@"Bad request"];
+[res respondWithError:404 text:@"Not found"];
+```
 
 ##### - (void) setHeader:(NSString\*)headerName value:(NSString\*)headerValue;
 Set a response header before responding.
 
 Examples
 
-	[res setHeader:@"Content-Type" value:@"image/gif"];
-	[res setHeader:@"Content-Type" value:@"audio/wav"];
-	[res setHeader:@"Host" value:@"WebViewProxy"];
+```objc
+[res setHeader:@"Content-Type" value:@"image/gif"];
+[res setHeader:@"Content-Type" value:@"audio/wav"];
+[res setHeader:@"Host" value:@"WebViewProxy"];
+```
 
 ##### - (void) setHeaders:(NSDictionary*)headers;
 Set multiple response headers before responding.
 
 Examples
 
-	[res setHeaders:@{ @"Content-Type":@"image/gif", @"Host":@"WebViewProxy" }];
+```objc
+[res setHeaders:@{ @"Content-Type":@"image/gif", @"Host":@"WebViewProxy" }];
+```
 
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType;
 
@@ -166,9 +188,11 @@ If mimeType is nil, WebWiewProxy attempts to infer it from the request URL path 
 
 Examples
 
-	NSString* greeting = @"Hi!";
-	NSData* data = [greeting dataUsingEncoding:NSUTF8StringEncoding];
-	[res respondWithData:data mimeType:@"text/plain"];
+```objc
+NSString* greeting = @"Hi!";
+NSData* data = [greeting dataUsingEncoding:NSUTF8StringEncoding];
+[res respondWithData:data mimeType:@"text/plain"];
+```
 
 ##### - (void) respondWithData:(NSData\*)data mimeType:(NSString\*)mimeType statusCode:(NSInteger)statusCode;
 
@@ -178,10 +202,12 @@ If mimeType is nil, WebWiewProxy attempts to infer it from the request URL path 
 
 Examples
 
-	NSData* data = [@"<div>Item has been created</div>" dataUsingEncoding:NSUTF8StringEncoding];
-	[res respondWithData:data mimeType:@"text/html" statusCode:201];
-	[res respondWithData:nil mimeType:nil statusCode:304]; // HTTP status code 304 "Not modified"
-	[res respondWithData:nil mimeType:nil statusCode:204]; // HTTP status code 204 "No Content"
+```objc
+NSData* data = [@"<div>Item has been created</div>" dataUsingEncoding:NSUTF8StringEncoding];
+[res respondWithData:data mimeType:@"text/html" statusCode:201];
+[res respondWithData:nil mimeType:nil statusCode:304]; // HTTP status code 304 "Not modified"
+[res respondWithData:nil mimeType:nil statusCode:204]; // HTTP status code 204 "No Content"
+```
 
 ##### NSURLCacheStoragePolicy cachePolicy (property)
 
@@ -189,9 +215,11 @@ The cache policy for the response. Default value is `NSURLCacheStorageNotAllowed
 
 Examples
 
-	response.cachePolicy = NSURLCacheStorageAllowed;
-	response.cachePolicy = NSURLCacheStorageAllowedInMemoryOnly;
-	response.cachePolicy = NSURLCacheStorageNotAllowed;
+```objc
+response.cachePolicy = NSURLCacheStorageAllowed;
+response.cachePolicy = NSURLCacheStorageAllowedInMemoryOnly;
+response.cachePolicy = NSURLCacheStorageNotAllowed;
+```
 
 #### Proxy requests to remote servers
 
@@ -199,25 +227,29 @@ There are many ways to proxy remote requests with `WebViewProxy`.
 
 The easiest approach uses `WebViewProxyResponse` as a `NSURLConnection` delegate. This pipes the response through the proxy response:
 
-	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
-	    NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
-	    NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
-	    [NSURLConnection connectionWithRequest:proxyReq delegate:res];
-	}];
+```objc
+[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+    NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+    NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+    [NSURLConnection connectionWithRequest:proxyReq delegate:res];
+}];
+```
 
 Another approach which sports more control but reads the entire response into memory:
 
-	NSOperationQueue* queue = [[NSOperationQueue alloc] init];
-	[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
-		NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
-		NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
-		[NSURLConnection sendAsynchronousRequest:proxyReq queue:queue completionHandler:^(NSURLResponse* proxyRes, NSData* proxyData, NSError* proxyErr) {
-			if (proxyErr) { return [res respondWithError:203 text:@"Could not reach server"]; }
-			NSInteger statusCode = [(NSHTTPURLResponse*)proxyRes statusCode];
-			[res setHeaders:[(NSHTTPURLResponse*)proxyRes allHeaderFields]];
-			[res respondWithData:proxyData mimeType:proxyRes.MIMEType statusCode:statusCode];
-		}];
+```objc
+NSOperationQueue* queue = [[NSOperationQueue alloc] init];
+[WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
+	NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+	NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+	[NSURLConnection sendAsynchronousRequest:proxyReq queue:queue completionHandler:^(NSURLResponse* proxyRes, NSData* proxyData, NSError* proxyErr) {
+		if (proxyErr) { return [res respondWithError:203 text:@"Could not reach server"]; }
+		NSInteger statusCode = [(NSHTTPURLResponse*)proxyRes statusCode];
+		[res setHeaders:[(NSHTTPURLResponse*)proxyRes allHeaderFields]];
+		[res respondWithData:proxyData mimeType:proxyRes.MIMEType statusCode:statusCode];
 	}];
+}];
+```
 
 #### Piping response API
 
@@ -242,13 +274,14 @@ This API can be used to e.g stop performing an expensive computation in your req
 
 Examples
 
-	[WebViewProxy handleRequestsMatching:predicate handler:^(NSURLRequest* req, WVPResponse *res) {
-	    NSOperation* expensiveOperation = [self startExpensiveOperation];
-	    [res handleStopLoadingRequest:^{
-	        [expensiveOperation cancel]
-	    }];
-	}];
-
+```objc
+[WebViewProxy handleRequestsMatching:predicate handler:^(NSURLRequest* req, WVPResponse *res) {
+    NSOperation* expensiveOperation = [self startExpensiveOperation];
+    [res handleStopLoadingRequest:^{
+        [expensiveOperation cancel]
+    }];
+}];
+```
 
 Contributors
 ------------
