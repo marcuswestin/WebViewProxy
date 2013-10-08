@@ -40,8 +40,10 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 - (void) _stopLoading {
     _stopped = YES;
-    _stopLoadingHandler();
-    _stopLoadingHandler = nil;
+    if (_stopLoadingHandler) {
+        _stopLoadingHandler();
+        _stopLoadingHandler = nil;
+    }
 }
 // High level API
 - (void)respondWithImage:(WVPImageType *)image {
