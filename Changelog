@@ -1,2 +1,5 @@
+v0.2.3
++ Fix NPE if handleStopLoadingRequest: had not been called
+
 v0.2.2
 + Add WVPResponse handleStopLoadingRequest:
