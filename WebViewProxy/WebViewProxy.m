@@ -159,7 +159,8 @@ static NSPredicate* webViewProxyLoopDetection;
     [self pipeEnd];
 }
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [self pipeEnd];
+    if (_stopped) { return; }
+    [_protocol.client URLProtocol:_protocol didFailWithError:error];
 }
 
 #ifdef WVP_OSX
