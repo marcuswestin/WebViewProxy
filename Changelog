@@ -1,3 +1,6 @@
+v0.2.4
++ Fix crash on network error while piping a response (GH issues #5 & #7).
+
 v0.2.3
 + Fix NPE if handleStopLoadingRequest: had not been called
 
