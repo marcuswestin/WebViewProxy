@@ -148,6 +148,10 @@ static NSPredicate* webViewProxyLoopDetection;
     if (_stopped) { return; }
     [_protocol.client URLProtocolDidFinishLoading:_protocol];
 }
+- (void)pipeError:(NSError *)error {
+    if (_stopped) { return; }
+    [_protocol.client URLProtocol:_protocol didFailWithError:error];
+}
 // NSURLConnectionDataDelegate
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
     [self pipeResponse:response];
@@ -159,7 +163,7 @@ static NSPredicate* webViewProxyLoopDetection;
     [self pipeEnd];
 }
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [self pipeEnd];
+    [self pipeError:error];
 }
 
 #ifdef WVP_OSX
