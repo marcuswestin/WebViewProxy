@@ -193,7 +193,7 @@ static NSPredicate* webViewProxyLoopDetection;
     [self respondWithData:data mimeType:mimeType];
 }
 - (NSString*)_contentLength:(NSData*)data {
-    return [NSString stringWithFormat:@"%d", data.length];
+    return [NSString stringWithFormat:@"%lu", (unsigned long)data.length];
 }
 #endif
 
