@@ -88,11 +88,16 @@ static NSPredicate* webViewProxyLoopDetection;
         [self setHeader:headerName value:headers[headerName]];
     }
 }
+
+- (void)failWithError:(NSError *)connectionError
+{
+    [_protocol.client URLProtocol:_protocol didFailWithError:connectionError];
+}
+
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
     [self respondWithData:data mimeType:mimeType statusCode:200];
 }
 - (void)respondWithError:(NSInteger)statusCode text:(NSString *)text {
-    // TODO We need to add an error responder to signal a network error, as opposed to an HTTP error
     NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }
