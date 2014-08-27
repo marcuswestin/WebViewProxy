@@ -22,7 +22,6 @@ typedef void (^StopLoadingHandler)();
 // Low level API
 - (void) setHeader:(NSString*)headerName value:(NSString*)headerValue;
 - (void) setHeaders:(NSDictionary*)headers;
-- (void) failWithError:(NSError*)connectionError;
 - (void) respondWithError:(NSInteger)statusCode text:(NSString*)text;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType statusCode:(NSInteger)statusCode;

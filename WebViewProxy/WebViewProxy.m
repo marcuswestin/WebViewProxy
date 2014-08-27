@@ -88,12 +88,6 @@ static NSPredicate* webViewProxyLoopDetection;
         [self setHeader:headerName value:headers[headerName]];
     }
 }
-
-- (void)failWithError:(NSError *)connectionError
-{
-    [_protocol.client URLProtocol:_protocol didFailWithError:connectionError];
-}
-
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
     [self respondWithData:data mimeType:mimeType statusCode:200];
 }
