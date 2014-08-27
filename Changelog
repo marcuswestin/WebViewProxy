@@ -1,3 +1,18 @@
+WebViewProxy Changelog
+======================
+
+Release Checklist
+-----------------
+- gitu-update
+- Note Changelog
+- Bump `WebViewProxy.podspec` version "X.Y.Z"
+- gitm-commit "vX.Y.Z"
+- gitt-tag "vX.Y.Z"
+- pod trunk push
+
+v0.2.5
++ Add podspec file
+
 v0.2.4
 + Fix crash on network error while piping a response (GH issues #5 & #7).
 
