@@ -28,6 +28,7 @@ typedef void (^StopLoadingHandler)();
 // Pipe data API
 - (void) pipeResponse:(NSURLResponse*)response;
 - (void) pipeData:(NSData*)data;
+- (void) pipeError:(NSError*)error;
 - (void) pipeEnd;
 // Private methods
 - (id) _initWithRequest:(NSURLRequest*)request protocol:(NSURLProtocol*)protocol;

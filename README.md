@@ -263,6 +263,9 @@ Pipe an NSURLResponse into the response.
 ##### - (void) pipeData:(NSData\*)data;
 Pipe data into the response.
 
+##### - (void) pipeError:(NSError\*)error;
+Pipe an error into the response (e.g a network error).
+
 ##### - (void) pipeEnd;
 Finish a piped response.
 
