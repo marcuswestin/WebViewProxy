@@ -22,7 +22,7 @@ typedef void (^StopLoadingHandler)();
 // Low level API
 - (void) setHeader:(NSString*)headerName value:(NSString*)headerValue;
 - (void) setHeaders:(NSDictionary*)headers;
-- (void) respondWithError:(NSInteger)statusCode text:(NSString*)text;
+- (void) respondWithStatusCode:(NSInteger)statusCode text:(NSString*)text;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType;
 - (void) respondWithData:(NSData*)data mimeType:(NSString*)mimeType statusCode:(NSInteger)statusCode;
 // Pipe data API

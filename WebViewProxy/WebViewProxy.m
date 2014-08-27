@@ -91,7 +91,7 @@ static NSPredicate* webViewProxyLoopDetection;
 - (void)respondWithData:(NSData *)data mimeType:(NSString *)mimeType {
     [self respondWithData:data mimeType:mimeType statusCode:200];
 }
-- (void)respondWithError:(NSInteger)statusCode text:(NSString *)text {
+- (void)respondWithStatusCode:(NSInteger)statusCode text:(NSString *)text {
     NSData* data = [text dataUsingEncoding:NSUTF8StringEncoding];
     [self respondWithData:data mimeType:@"text/plain" statusCode:statusCode];
 }

@@ -87,8 +87,8 @@ All registered handlers are given a `WVPRespone* res`. You respond to the reques
 There are 3 type of APIs for responding to a request
 
 - High level API for responding with an image, text, html or json
-- Low level API for responding with the given HTTP headers and NSData
-- Piping API for piping the data from a `NSURLConnection` data through to the `WVPResponse`
+- Low level API for responding with specific HTTP headers and NSData
+- Piping API for passing data/errors from `NSURLConnection` through the `WVPResponse`
 
 #### High level response API
 
@@ -150,14 +150,14 @@ Respond with JSON (sent with Content-Type "application/json"):
 
 Descriptions and examples will be fleshed out.
 
-##### - (void) respondWithError:(NSInteger)statusCode text:(NSString\*)text;
-Respond with the given HTTP status error code and text.
+##### - (void) respondWithStatusCode:(NSInteger)statusCode text:(NSString\*)text;
+Respond with the given HTTP status code and text.
 
 Examples
 
 ```objc
-[res respondWithError:400 text:@"Bad request"];
-[res respondWithError:404 text:@"Not found"];
+[res respondWithStatusCode:400 text:@"Bad request"];
+[res respondWithStatusCode:404 text:@"Not found"];
 ```
 
 ##### - (void) setHeader:(NSString\*)headerName value:(NSString\*)headerValue;
@@ -235,19 +235,22 @@ The easiest approach uses `WebViewProxyResponse` as a `NSURLConnection` delegate
 }];
 ```
 
-Another approach which sports more control but reads the entire response into memory:
+Another approach which gives you more control but reads the entire response into memory:
 
 ```objc
-NSOperationQueue* queue = [[NSOperationQueue alloc] init];
 [WebViewProxy handleRequestsWithHost:@"example.proxy" handler:^(NSURLRequest *req, WVPResponse *res) {
-	NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
-	NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
-	[NSURLConnection sendAsynchronousRequest:proxyReq queue:queue completionHandler:^(NSURLResponse* proxyRes, NSData* proxyData, NSError* proxyErr) {
-		if (proxyErr) { return [res respondWithError:203 text:@"Could not reach server"]; }
-		NSInteger statusCode = [(NSHTTPURLResponse*)proxyRes statusCode];
-		[res setHeaders:[(NSHTTPURLResponse*)proxyRes allHeaderFields]];
-		[res respondWithData:proxyData mimeType:proxyRes.MIMEType statusCode:statusCode];
-	}];
+    NSString* proxyUrl = [req.URL.absoluteString stringByReplacingOccurrencesOfString:@"example.proxy" withString:@"example.com"];
+    NSURLRequest* proxyReq = [NSURLRequest requestWithURL:[NSURL URLWithString:proxyUrl]];
+    NSOperationQueue* queue = [NSOperationQueue new];
+    [NSURLConnection sendAsynchronousRequest:proxyReq queue:queue completionHandler:^(NSURLResponse* proxyRes, NSData* proxyData, NSError* proxyErr) {
+        if (proxyErr) {
+            return [res pipeError:proxyErr];
+        } else {
+            NSInteger statusCode = [(NSHTTPURLResponse*)proxyRes statusCode];
+            [res setHeaders:[(NSHTTPURLResponse*)proxyRes allHeaderFields]];
+            [res respondWithData:proxyData mimeType:proxyRes.MIMEType statusCode:statusCode];
+        }
+    }];
 }];
 ```
 
