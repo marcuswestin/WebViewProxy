@@ -10,6 +10,9 @@ Release Checklist
 - gitt-tag "vX.Y.Z"
 - pod trunk push
 
+v0.2.6
++ Add OSX back into podspec file
+
 v0.2.5
 + Add podspec file
 
