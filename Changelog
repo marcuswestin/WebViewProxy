@@ -1,3 +1,26 @@
+WebViewProxy Changelog
+======================
+
+Release Checklist
+-----------------
+- gitu-update
+- Note Changelog
+- Bump `WebViewProxy.podspec` version "X.Y.Z"
+- gitm-commit "vX.Y.Z"
+- gitt-tag "vX.Y.Z"
+- pod trunk push
+
+v1.0.0
++ Remove `WVPResponse -respondWithError:text:`
++ Add `WVPResponse -respondWithStatusCode:text:`
++ Add README examples to clarify handling of errors using `WVPResponse pipeError:`
+
+v0.2.6
++ Add OSX back into podspec file
+
+v0.2.5
++ Add podspec file
+
 v0.2.4
 + Fix crash on network error while piping a response (GH issues #5 & #7).
 

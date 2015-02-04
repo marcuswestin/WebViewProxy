@@ -37,8 +37,13 @@
     
     [WebViewProxy handleRequestsWithHost:@"www.google.com" path:@"/images/srpr/logo3w.png" handler:^(NSURLRequest* req, WVPResponse *res) {
         [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:req.URL] queue:queue completionHandler:^(NSURLResponse *netRes, NSData *data, NSError *netErr) {
-            if (netErr || ((NSHTTPURLResponse*)netRes).statusCode >= 400) { return [res respondWithError:500 text:@":("]; }
-            [res respondWithData:data mimeType:@"image/png"];
+            if (netErr) {
+                return [res pipeError:netErr];
+            } else if (((NSHTTPURLResponse*)netRes).statusCode >= 400) {
+                return [res respondWithStatusCode:500 text:@"There was some sort of error :("];
+            } else {
+                [res respondWithData:data mimeType:@"image/png"];
+            }
         }];
     }];
     
