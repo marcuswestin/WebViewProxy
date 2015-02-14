@@ -17,8 +17,6 @@
 		2C08C5DD176A576000D91EF5 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C08C5DC176A576000D91EF5 /* XCTest.framework */; };
 		2C08C5DE176A576000D91EF5 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C08C5C3176A576000D91EF5 /* Foundation.framework */; };
 		2C08C5DF176A576000D91EF5 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C08C5C7176A576000D91EF5 /* UIKit.framework */; };
-		2C08C5E7176A576000D91EF5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2C08C5E5176A576000D91EF5 /* InfoPlist.strings */; };
-		2C08C5E9176A576000D91EF5 /* ExampleApp_iOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C08C5E8176A576000D91EF5 /* ExampleApp_iOSTests.m */; };
 		2C08C5F5176A58BA00D91EF5 /* WebViewProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = 2C08C5F4176A58BA00D91EF5 /* WebViewProxy.m */; };
 		2C08C5F8176A596800D91EF5 /* Galaxy.png in Resources */ = {isa = PBXBuildFile; fileRef = 2C08C5F6176A596800D91EF5 /* Galaxy.png */; };
 		2C08C5F9176A596800D91EF5 /* WebViewContent.html in Resources */ = {isa = PBXBuildFile; fileRef = 2C08C5F7176A596800D91EF5 /* WebViewContent.html */; };
@@ -48,9 +46,6 @@
 		2C08C5D5176A576000D91EF5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		2C08C5DB176A576000D91EF5 /* ExampleApp_iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleApp_iOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C08C5DC176A576000D91EF5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		2C08C5E4176A576000D91EF5 /* ExampleApp_iOSTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "ExampleApp_iOSTests-Info.plist"; sourceTree = "<group>"; };
-		2C08C5E6176A576000D91EF5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		2C08C5E8176A576000D91EF5 /* ExampleApp_iOSTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleApp_iOSTests.m; sourceTree = "<group>"; };
 		2C08C5F3176A58BA00D91EF5 /* WebViewProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewProxy.h; sourceTree = "<group>"; };
 		2C08C5F4176A58BA00D91EF5 /* WebViewProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewProxy.m; sourceTree = "<group>"; };
 		2C08C5F6176A596800D91EF5 /* Galaxy.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Galaxy.png; sourceTree = SOURCE_ROOT; };
@@ -85,7 +80,6 @@
 			isa = PBXGroup;
 			children = (
 				2C08C5C9176A576000D91EF5 /* ExampleApp_iOS */,
-				2C08C5E2176A576000D91EF5 /* ExampleApp_iOSTests */,
 				2C08C5C2176A576000D91EF5 /* Frameworks */,
 				2C08C5C1176A576000D91EF5 /* Products */,
 			);
@@ -132,24 +126,6 @@
 				2C08C5CC176A576000D91EF5 /* InfoPlist.strings */,
 				2C08C5CF176A576000D91EF5 /* main.m */,
 				2C08C5D1176A576000D91EF5 /* ExampleApp_iOS-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		2C08C5E2176A576000D91EF5 /* ExampleApp_iOSTests */ = {
-			isa = PBXGroup;
-			children = (
-				2C08C5E8176A576000D91EF5 /* ExampleApp_iOSTests.m */,
-				2C08C5E3176A576000D91EF5 /* Supporting Files */,
-			);
-			path = ExampleApp_iOSTests;
-			sourceTree = "<group>";
-		};
-		2C08C5E3176A576000D91EF5 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				2C08C5E4176A576000D91EF5 /* ExampleApp_iOSTests-Info.plist */,
-				2C08C5E5176A576000D91EF5 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -250,7 +226,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C08C5E7176A576000D91EF5 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,7 +246,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2C08C5E9176A576000D91EF5 /* ExampleApp_iOSTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -290,14 +264,6 @@
 			isa = PBXVariantGroup;
 			children = (
 				2C08C5CD176A576000D91EF5 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		2C08C5E5176A576000D91EF5 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2C08C5E6176A576000D91EF5 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -416,7 +382,6 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "ExampleApp_iOSTests/ExampleApp_iOSTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -434,7 +399,6 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ExampleApp_iOS/ExampleApp_iOS-Prefix.pch";
-				INFOPLIST_FILE = "ExampleApp_iOSTests/ExampleApp_iOSTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

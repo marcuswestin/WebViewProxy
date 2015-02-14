@@ -46,7 +46,7 @@
 		2C08C58E176A4EF200D91EF5 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2C08C591176A4EF200D91EF5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		2C08C593176A4EF200D91EF5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		2C08C599176A4EF200D91EF5 /* ExampleApp_OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = folder; includeInIndex = 0; path = ExampleApp_OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		2C08C599176A4EF200D91EF5 /* ExampleApp_OSXTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleApp_OSXTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2C08C59A176A4EF200D91EF5 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		2C08C5B0176A4F1600D91EF5 /* WebViewProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebViewProxy.h; sourceTree = "<group>"; };
 		2C08C5B1176A4F1600D91EF5 /* WebViewProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WebViewProxy.m; sourceTree = "<group>"; };
@@ -411,7 +411,6 @@
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				INFOPLIST_FILE = "ExampleApp_OSXTests/ExampleApp_OSXTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -429,7 +428,6 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ExampleApp_OSX/ExampleApp_OSX-Prefix.pch";
-				INFOPLIST_FILE = "ExampleApp_OSXTests/ExampleApp_OSXTests-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
