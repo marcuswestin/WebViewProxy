@@ -10,6 +10,9 @@ Release Checklist
 - gitt-tag "vX.Y.Z"
 - pod trunk push
 
+v1.0.1
++ Add [WebViewProxy removeAllHandlers]
+
 v1.0.0
 + Remove `WVPResponse -respondWithError:text:`
 + Add `WVPResponse -respondWithStatusCode:text:`
