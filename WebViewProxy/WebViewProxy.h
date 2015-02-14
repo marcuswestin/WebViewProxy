@@ -38,7 +38,7 @@ typedef void (^StopLoadingHandler)();
 // The actual WebViewProxy API itself
 typedef void (^WVPHandler)(NSURLRequest* req, WVPResponse* res);
 @interface WebViewProxy : NSObject
-+ (void) resetRequestMatchers;
++ (void) removeAllHandlers;
 + (void) handleRequestsWithScheme:(NSString*)scheme handler:(WVPHandler)handler;
 + (void) handleRequestsWithHost:(NSString*)host handler:(WVPHandler)handler;
 + (void) handleRequestsWithHost:(NSString*)host path:(NSString*)path handler:(WVPHandler)handler;
