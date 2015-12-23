@@ -107,7 +107,7 @@ static NSPredicate* webViewProxyLoopDetection;
         }
     }
     if (!_headers[@"Content-Length"]) {
-        _headers[@"Content-Length"] = [self _contentLength:data];
+        _headers[@"Content-Length"] = [NSString stringWithFormat:@"%lu", (unsigned long)data.length];
     }
     NSHTTPURLResponse* response = [[NSHTTPURLResponse alloc] initWithURL:_protocol.request.URL statusCode:statusCode HTTPVersion:@"HTTP/1.1" headerFields:_headers];
     [_protocol.client URLProtocol:_protocol didReceiveResponse:response cacheStoragePolicy:_cachePolicy];
