@@ -288,8 +288,3 @@ Examples
     }];
 }];
 ```
-
-Contributors
-------------
-- [@marcuswestin](https://github.com/marcuswestin) Marcus Westin (Author)
-- Ragnar Frostason
