@@ -213,7 +213,8 @@ static NSPredicate* webViewProxyLoopDetection;
 }
 @synthesize proxyResponse=_proxyResponse, requestMatcher=_requestMatcher;
 + (WVPRequestMatcher *)findRequestMatcher:(NSURL *)url {
-    for (WVPRequestMatcher* requestMatcher in requestMatchers) {
+    NSMutableArray* requestMatchersCopy = [requestMatchers mutableCopy];
+    for (WVPRequestMatcher* requestMatcher in requestMatchersCopy) {
         if ([requestMatcher.predicate evaluateWithObject:url]) {
             return requestMatcher;
         }
